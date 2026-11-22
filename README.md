@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 星舵 StarRudder
 
-## Getting Started
+> 你的互联网罗盘 · 发现值得停泊的好站
 
-First, run the development server:
+一个中文站点导航网站，包含资讯、站点导航、友情链接三大模块，带完整后台管理，从一开始就为 Google SEO 做好准备。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+详细规划见 [docs/PLAN.md](docs/PLAN.md)。
+
+## 技术栈
+
+- Next.js 16（App Router）+ TypeScript
+- Tailwind CSS v4 + [coss ui](https://coss.com/ui)（Cal.com 设计系统）
+- PostgreSQL + Drizzle ORM
+- Auth.js 后台鉴权
+- Tiptap 富文本 / rss-parser 资讯聚合
+
+## 本地开发
+
+前置条件：本地已运行 PostgreSQL，并创建数据库 `star_rudder`：
+
+```sql
+CREATE DATABASE star_rudder;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+# 1. 安装依赖
+pnpm install
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# 2. 配置环境变量（参考 .env.example）
+cp .env.example .env.local
+# 编辑 .env.local 中的 DATABASE_URL / AUTH_SECRET
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# 3. 数据库迁移与种子数据（M1 完成后补齐命令）
+pnpm db:generate
+pnpm db:migrate
+pnpm db:seed
 
-## Learn More
+# 4. 启动
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+打开 http://localhost:3000 。

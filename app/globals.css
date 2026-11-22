@@ -1,26 +1,205 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
+/* coss ui (Cal.com design system) design tokens, tuned for StarRudder:
+   极简留白 · 暖白底 · 墨黑字 · 单一「星舵蓝」点缀色 */
 @theme inline {
+  --breakpoint-3xl: 1600px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
+  --color-code-highlight: var(--code-highlight);
+  --radius-sm: calc(var(--radius) - 3px);
+  --radius-md: calc(var(--radius) - 1px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --animate-skeleton: skeleton 2s -1s infinite linear;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  @keyframes skeleton {
+    to {
+      background-position: -200% 0;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+:root {
+  --radius: 0.5rem;
+
+  --background: #fafaf9;
+  --foreground: #1c1c1a;
+  --card: #ffffff;
+  --card-foreground: #1c1c1a;
+  --popover: #ffffff;
+  --popover-foreground: #1c1c1a;
+
+  /* 星舵蓝 —— 全站唯一点缀色 */
+  --primary: #2e4a8f;
+  --primary-foreground: #ffffff;
+  --ring: #2e4a8f;
+
+  --secondary: #f1f1ee;
+  --secondary-foreground: #272723;
+  --muted: #f4f4f1;
+  --muted-foreground: #73736d;
+  --accent: #eef1f8;
+  --accent-foreground: #26385f;
+
+  --destructive: #c0392b;
+  --destructive-foreground: #ffffff;
+  --info: #2e4a8f;
+  --info-foreground: #ffffff;
+  --success: #1f7a5a;
+  --success-foreground: #ffffff;
+  --warning: #a86400;
+  --warning-foreground: #ffffff;
+
+  --border: --alpha(#1c1c1a / 12%);
+  --input: --alpha(#1c1c1a / 14%);
+
+  --chart-1: #2e4a8f;
+  --chart-2: #4a6cc0;
+  --chart-3: #7d95d4;
+  --chart-4: #b0c0e6;
+  --chart-5: #d6def3;
+
+  --sidebar: #f5f5f2;
+  --sidebar-foreground: #3d3d38;
+  --sidebar-primary: #2e4a8f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ecece8;
+  --sidebar-accent-foreground: #1c1c1a;
+  --sidebar-border: #e5e5e0;
+  --sidebar-ring: #2e4a8f;
+
+  --code: #ffffff;
+  --code-foreground: var(--foreground);
+  --code-highlight: #f1f1ee;
+}
+
+.dark {
+  --background: #141414;
+  --foreground: #ededeb;
+  --card: #1b1b1b;
+  --card-foreground: #ededeb;
+  --popover: #1b1b1b;
+  --popover-foreground: #ededeb;
+
+  --primary: #8fa9e8;
+  --primary-foreground: #141c30;
+  --ring: #8fa9e8;
+
+  --secondary: #242424;
+  --secondary-foreground: #ededeb;
+  --muted: #242424;
+  --muted-foreground: #a1a19b;
+  --accent: #1f2940;
+  --accent-foreground: #cfdcf9;
+
+  --destructive: #ef6a5b;
+  --destructive-foreground: #2a0f0c;
+  --info: #8fa9e8;
+  --info-foreground: #141c30;
+  --success: #52c49b;
+  --success-foreground: #0d2b21;
+  --warning: #e5ad5a;
+  --warning-foreground: #2e1f07;
+
+  --border: --alpha(#ffffff / 12%);
+  --input: --alpha(#ffffff / 16%);
+
+  --chart-1: #8fa9e8;
+  --chart-2: #6c8bd6;
+  --chart-3: #4f6cae;
+  --chart-4: #38507f;
+  --chart-5: #263656;
+
+  --sidebar: #1a1a1a;
+  --sidebar-foreground: #b9b9b3;
+  --sidebar-primary: #8fa9e8;
+  --sidebar-primary-foreground: #141c30;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #ededeb;
+  --sidebar-border: #2b2b2b;
+  --sidebar-ring: #8fa9e8;
+
+  --code: #1b1b1b;
+  --code-foreground: var(--foreground);
+  --code-highlight: #262626;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+  }
+}
+
+@utility container {
+  @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+}
+
+/* 克制的通用类：极简留白 */
+@utility text-balance {
+  text-wrap: balance;
 }
