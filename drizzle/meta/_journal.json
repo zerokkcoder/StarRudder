@@ -15,6 +15,13 @@
       "when": 1795351058278,
       "tag": "0001_windy_living_lightning",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1795356180938,
+      "tag": "0002_melted_sharon_carter",
+      "breakpoints": true
     }
   ]
 }

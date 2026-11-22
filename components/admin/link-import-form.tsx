@@ -64,8 +64,8 @@ export function LinkImportForm({
               </select>
             </div>
             <div>
-              <label htmlFor="tags" className="index-num mb-2 block">标签（逗号分隔）</label>
-              <input id="tags" name="tags" defaultValue={preview.tags.join("，")} className={fieldClass} style={{ borderColor: "var(--border)" }} />
+              <label htmlFor="author" className="index-num mb-2 block">作者</label>
+              <input id="author" name="author" defaultValue={preview.author} className={fieldClass} style={{ borderColor: "var(--border)" }} />
             </div>
           </div>
           <div>

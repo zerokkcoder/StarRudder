@@ -5,6 +5,7 @@ export type ImportedContent = {
   summary: string;
   content: string;
   sourceUrl: string;
+  author: string;
   tags: string[];
 };
 
@@ -105,6 +106,7 @@ async function fromGithub(owner: string, repo: string, sourceUrl: string): Promi
     summary: summary.slice(0, 220),
     content,
     sourceUrl,
+    author: (meta as GithubMeta & { owner?: { login?: string } }).owner?.login || owner,
     tags: ["开源项目", meta.language || "GitHub", ...topics.slice(0, 3)].filter(Boolean),
   };
 }
@@ -148,6 +150,7 @@ async function fromX(user: string, id: string, sourceUrl: string): Promise<Impor
       summary,
       content: `${header}\n\n${body || summary}`,
       sourceUrl,
+      author: screenName || author,
       tags: ["X 长文", author],
     };
   }
@@ -158,6 +161,7 @@ async function fromX(user: string, id: string, sourceUrl: string): Promise<Impor
     summary: text.slice(0, 220),
     content: `${header}\n\n${text}`,
     sourceUrl,
+    author: screenName || author,
     tags: ["X", author],
   };
 }
@@ -191,11 +195,17 @@ async function fromWebpage(url: string): Promise<ImportedContent> {
   if (!title) throw new Error("未能提取到标题，请检查链接是否可访问");
 
   const hostname = new URL(url).hostname.replace(/^www\./, "");
+  const author = clean(
+    $("meta[name='author']").attr("content") ||
+      $("meta[property='article:author']").attr("content") ||
+      hostname,
+  );
   return {
     title: title.slice(0, 200),
     summary: (summary || content.slice(0, 180)).slice(0, 220),
     content: content || summary,
     sourceUrl: url,
+    author,
     tags: [hostname],
   };
 }

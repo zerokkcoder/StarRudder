@@ -79,7 +79,7 @@ export default async function ArticlePage({
 
       <header className="mt-12 border-b pb-10" style={{ borderColor: "var(--border)" }}>
         <div className="flex items-center gap-3">
-          <span className="index-num text-primary">资讯正文</span>
+          <span className="index-num text-primary">内容正文</span>
           {article.source !== "manual" && (
             <span className="index-num border px-1.5 py-0.5" style={{ borderColor: "var(--border)" }}>
               {article.source === "link" ? "链接导入" : "聚合"}
@@ -92,6 +92,7 @@ export default async function ArticlePage({
         <p className="mt-5 text-sm leading-7 text-muted-foreground">{article.summary}</p>
         <div className="index-num mt-6 flex flex-wrap gap-x-6 gap-y-2">
           <time dateTime={article.publishedAt.toISOString()}>{dateFormatter.format(article.publishedAt)}</time>
+          {article.author && <span>作者：{article.author}</span>}
           {article.tags.map((tag) => <span key={tag}>#{tag}</span>)}
           {article.sourceUrl && <span>源：{new URL(article.sourceUrl).hostname}</span>}
         </div>

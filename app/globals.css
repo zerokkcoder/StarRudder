@@ -218,6 +218,17 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* 原生下拉框跟随主题，避免深色下白色弹层 */
+  select {
+    color-scheme: light;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+  .dark select,
+  [data-theme="dark"] select {
+    color-scheme: dark;
+  }
+
   /* 统一的细线分隔风格 */
   .hairline {
     @apply border-b;

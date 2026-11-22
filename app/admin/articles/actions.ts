@@ -43,10 +43,8 @@ export async function saveImportedArticle(formData: FormData) {
   if (!title || !sourceUrl) return;
 
   const categoryRaw = String(formData.get("categoryId") ?? "").trim();
-  const tags = String(formData.get("tags") ?? "")
-    .split(/[,，]/)
-    .map((tag) => tag.trim())
-    .filter(Boolean);
+  const author = String(formData.get("author") ?? "").trim();
+  const tags = author ? [author] : [];
 
   await db.insert(schema.articles).values({
     title,
@@ -56,6 +54,7 @@ export async function saveImportedArticle(formData: FormData) {
     categoryId: /^\d+$/.test(categoryRaw) ? Number(categoryRaw) : null,
     tags,
     source: "link",
+    author: author || null,
     sourceUrl,
     publishedAt: new Date(),
   });

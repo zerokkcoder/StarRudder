@@ -64,6 +64,7 @@ export const articles = mysqlTable(
     summary: text("summary").notNull(),
     content: text("content").notNull(),
     cover: text("cover"),
+    author: varchar("author", { length: 150 }),
     categoryId: int("category_id").references(() => categories.id, {
       onDelete: "set null",
     }),
