@@ -38,7 +38,7 @@ export default async function RootLayout({
   ]);
 
   return (
-    <html lang="zh-CN" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="zh-CN" className="dark" suppressHydrationWarning data-scroll-behavior="smooth">
       <body className="min-h-screen">
         <DevErrorFilter />
         <JsonLd schema={[websiteJsonLd, organizationJsonLd]} />
