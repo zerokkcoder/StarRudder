@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/inter";
 import "./globals.css";
+import { AppShell } from "@/components/app-shell";
 import { DevErrorFilter } from "@/components/dev-error-filter";
-import { RandomDock } from "@/components/random-dock";
-import { SiteChrome } from "@/components/site-chrome";
-import { SiteFooter } from "@/components/site-footer";
 import { getAllArticles, getAllSites } from "@/lib/queries";
 import { createMetadata, JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -13,6 +11,9 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   ...createMetadata({ title: siteConfig.name, description: siteConfig.description }),
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
   title: {
     default: `${siteConfig.name} · ${siteConfig.slogan}`,
     template: `%s | ${siteConfig.name}`,
@@ -41,7 +42,7 @@ export default async function RootLayout({
       <body className="min-h-screen">
         <DevErrorFilter />
         <JsonLd schema={[websiteJsonLd, organizationJsonLd]} />
-        <SiteChrome
+        <AppShell
           searchData={{
             sites: allSites.map(({ name, slug, url, description }) => ({
               name,
@@ -55,12 +56,10 @@ export default async function RootLayout({
               summary,
             })),
           }}
-        />
-        <div className="lg:pl-[176px]">
-          <main className="min-h-[70vh]">{children}</main>
-          <SiteFooter />
-        </div>
-        <RandomDock sites={allSites.map(({ name, slug }) => ({ name, slug }))} />
+          randomSites={allSites.map(({ name, slug }) => ({ name, slug }))}
+        >
+          {children}
+        </AppShell>
       </body>
     </html>
   );

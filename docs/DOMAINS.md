@@ -1,6 +1,14 @@
-# 星舵 · 候选域名
+# 星舵 · 域名
 
-> `starrudder.com` 已被占用。以下通过 RDAP 公开接口查询（2026-11-22），404 表示未注册，最终以下单页面为准。
+> **已购买：`starrudder.cc`**（生产地址 `https://starrudder.cc`）。
+> 以下为当初的候选调研记录，通过 RDAP 公开接口查询（2026-11-22），404 表示未注册。
+
+## 当前配置
+
+- `NEXT_PUBLIC_SITE_URL=https://starrudder.cc`（`.env.example` / 线上环境变量）
+- `lib/site.ts` 的兜底 URL 已改为 `https://starrudder.cc`
+- canonical、sitemap.xml、robots.txt、OpenGraph 全部自动跟随该地址
+- Google Search Console：填入 `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` 即可输出验证 meta
 
 ## 已确认被注册
 

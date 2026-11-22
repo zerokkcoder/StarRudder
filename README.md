@@ -1,10 +1,13 @@
 # 星舵 StarRudder
 
-> 你的互联网罗盘 · 发现值得停泊的好站
+> 你的互联网罗盘 · 发现值得停泊的好站 · **https://starrudder.cc**
 
 一个中文站点导航网站，包含资讯、站点导航、友情链接三大模块，带完整后台管理，从一开始就为 Google SEO 做好准备。
 
-详细规划见 [docs/PLAN.md](docs/PLAN.md)。
+- 规划：[docs/PLAN.md](docs/PLAN.md)
+- 设计规范：[docs/DESIGN.md](docs/DESIGN.md)
+- 域名说明：[docs/DOMAINS.md](docs/DOMAINS.md)
+- 部署指南：[docs/DEPLOY.md](docs/DEPLOY.md)
 
 ## 技术栈
 

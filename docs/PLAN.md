@@ -172,6 +172,13 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - [x] 提交审核：`/admin/submissions`（收录/忽略）
 - [x] JWT 会话鉴权、统一后台导航与退出登录；后台页面均 noindex
 
-### 待办
+### M5 部署准备（已完成，待服务器上执行）
 
-- M5 SEO 深化 + 上线部署（含域名确定后更新 `NEXT_PUBLIC_SITE_URL`）
+- [x] 域名已购买：`starrudder.cc`；`NEXT_PUBLIC_SITE_URL`、canonical、sitemap、robots、OG 全部切换
+- [x] Google Search Console 验证串支持 `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`
+- [x] `next.config.ts` 开启 `output: "standalone"`（构建产物 `.next/standalone/server.js` 已验证）
+- [x] 部署指南 `docs/DEPLOY.md`：线上 PostgreSQL 建库、环境变量、standalone 上传、PM2、Nginx + HTTPS、RSS cron、SEO 上线清单
+- [x] `ecosystem.config.js`（PM2）
+- [x] 后台页面去掉左侧导航；左侧导航文案改为 2 字（首页/站点/资讯/友链）
+
+> 剩余事项需在用户的线上服务器执行：建库、迁移、上传产物、Nginx/HTTPS、PM2 启动、Google 验证。
