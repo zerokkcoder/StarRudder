@@ -206,5 +206,6 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - 后台增加**独立主题开关**（`star-rudder-admin-theme`，作用于 `#admin-root` 的 `data-theme`，不影响前台）
 - 内容模块重构：新增「链接导入」——粘贴长文链接 / GitHub 仓库链接，自动抓取标题、摘要与正文（GitHub 走 API + README），可在后台核对编辑后入库（`source=link`）；RSS 订阅源保留为可选补充
 - 用户可见文案「资讯」改为「内容」（路由 `/news` 保持不变，避免影响 SEO）
+- 链接导入增强：GitHub 改用 API `/readme`（raw）+ `/topics`，补全语言/星标/许可/主页/主题与完整 README；X 推文改用 fxtwitter 镜像接口，长文直接取 `article.content.blocks`，实测可抓回 6000+ 字正文
 
 > 剩余事项需在用户的线上服务器执行：MySQL 建库、迁移、上传产物、Nginx/HTTPS、PM2 启动、Google 验证。

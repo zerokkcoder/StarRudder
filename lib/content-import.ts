@@ -16,16 +16,21 @@ function clean(text: string) {
 }
 
 function paragraphs(parts: string[]) {
-  return parts.map(clean).filter((p) => p.length > 1).slice(0, 200).join("\n\n").slice(0, 20000);
+  return parts
+    .map((part) => clean(part))
+    .filter((part) => part.length > 1)
+    .slice(0, 400)
+    .join("\n\n")
+    .slice(0, 20000);
 }
 
 function markdownToText(md: string) {
   const blocks = md
-    .replace(/```[\s\S]*?```/g, "")
+    .replace(/```[\s\S]*?```/g, (block) => block.replace(/^```[^\n]*\n?/, "").replace(/```$/, ""))
     .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
     .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
     .replace(/^#{1,6}\s*/gm, "")
-    .replace(/^[\s>*_-]+/gm, "")
+    .replace(/^\s*[-*+>]\s+/gm, "")
     .split(/\n\s*\n/);
   return paragraphs(blocks);
 }
@@ -42,32 +47,123 @@ async function fetchText(url: string, headers: Record<string, string> = {}) {
   return response.text();
 }
 
-/** 从 GitHub 仓库页提取名称、描述与 README */
+/* ---------------- GitHub ---------------- */
+
+type GithubMeta = {
+  name?: string;
+  full_name?: string;
+  description?: string | null;
+  language?: string | null;
+  stargazers_count?: number;
+  homepage?: string | null;
+  license?: { spdx_id?: string } | null;
+};
+
 async function fromGithub(owner: string, repo: string, sourceUrl: string): Promise<ImportedContent> {
   const api = `https://api.github.com/repos/${owner}/${repo}`;
-  const [metaRaw, readmeRaw] = await Promise.all([
-    fetchText(api, { Accept: "application/vnd.github+json" }).catch(() => "{}"),
-    fetchText(`https://raw.githubusercontent.com/${owner}/${repo}/HEAD/README.md`).catch(() => ""),
+  const ghHeaders = { Accept: "application/vnd.github+json" };
+  const [metaRaw, readmeRaw, topicsRaw] = await Promise.all([
+    fetchText(api, ghHeaders).catch(() => "{}"),
+    fetchText(`${api}/readme`, { Accept: "application/vnd.github.raw+json" }).catch(() => ""),
+    fetchText(`${api}/topics`, ghHeaders).catch(() => '{"names":[]}'),
   ]);
 
-  let meta: { name?: string; description?: string | null; language?: string | null } = {};
+  let meta: GithubMeta = {};
+  let topics: string[] = [];
   try {
     meta = JSON.parse(metaRaw);
   } catch {
-    // 忽略解析失败，使用 URL 中的仓库名
+    // 用 URL 中的仓库名兜底
+  }
+  try {
+    topics = JSON.parse(topicsRaw).names ?? [];
+  } catch {
+    // 忽略主题解析失败
   }
 
   const title = meta.name || repo;
-  const summary = clean(meta.description || `开源项目 ${owner}/${repo}`);
-  const content = readmeRaw
-    ? markdownToText(readmeRaw)
-    : `${summary}\n\n项目地址：${sourceUrl}`;
-  const tags = ["开源项目", meta.language || "GitHub"].filter(Boolean);
+  const readme = readmeRaw ? markdownToText(readmeRaw) : "";
+  const firstParagraph = readme.split("\n\n").map(clean).find((part) => part.length > 10) || "";
+  const summary = clean(meta.description || firstParagraph || `开源项目 ${owner}/${repo}`);
+  const info = [
+    summary,
+    `项目地址：${sourceUrl}`,
+    `仓库：${meta.full_name || `${owner}/${repo}`}`,
+    meta.language ? `主要语言：${meta.language}` : "",
+    typeof meta.stargazers_count === "number" ? `星标：${meta.stargazers_count}` : "",
+    meta.license?.spdx_id ? `许可：${meta.license.spdx_id}` : "",
+    meta.homepage ? `主页：${meta.homepage}` : "",
+    topics.length ? `主题：${topics.join("、")}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
-  return { title, summary, content: content || summary, sourceUrl, tags };
+  const content = `${info}\n\n${readme ? `## 项目说明（README）\n\n${readme}` : "项目说明暂不可用，请访问项目地址查看详情。"}`;
+
+  return {
+    title: title.slice(0, 200),
+    summary: summary.slice(0, 220),
+    content,
+    sourceUrl,
+    tags: ["开源项目", meta.language || "GitHub", ...topics.slice(0, 3)].filter(Boolean),
+  };
 }
 
-/** 从任意网页链接提取标题、摘要与正文纯文本 */
+/* ---------------- X / Twitter ---------------- */
+
+type FxResponse = {
+  code?: number;
+  tweet?: {
+    text?: string;
+    author?: { name?: string; screen_name?: string };
+    created_at?: string;
+    article?: {
+      title?: string;
+      preview_text?: string;
+      content?: { blocks?: { text?: string }[] };
+    };
+  };
+};
+
+/** X 页面本身需要登录，使用公开的 fxtwitter 镜像接口取回推文或长文内容 */
+async function fromX(user: string, id: string, sourceUrl: string): Promise<ImportedContent> {
+  const raw = await fetchText(`https://api.fxtwitter.com/${user}/status/${id}`, {
+    Accept: "application/json",
+  });
+  const data = JSON.parse(raw) as FxResponse;
+  const tweet = data.tweet;
+  if (data.code !== 200 || !tweet) throw new Error("无法读取该推文，可能已被删除或设为私密");
+
+  const author = tweet.author?.name || user;
+  const screenName = tweet.author?.screen_name || user;
+  const header = `作者：${author} (@${screenName})\n发布时间：${tweet.created_at || "未知"}\n原文：${sourceUrl}`;
+
+  if (tweet.article) {
+    const blocks = tweet.article.content?.blocks ?? [];
+    const body = paragraphs(blocks.map((block) => block.text ?? ""));
+    const title = clean(tweet.article.title || "").slice(0, 200) || `${author} 的长文`;
+    const summary = clean(tweet.article.preview_text || "").slice(0, 220) || body.slice(0, 180);
+    return {
+      title,
+      summary,
+      content: `${header}\n\n${body || summary}`,
+      sourceUrl,
+      tags: ["X 长文", author],
+    };
+  }
+
+  const text = clean(tweet.text || "");
+  return {
+    title: `${author} 的帖子`.slice(0, 200),
+    summary: text.slice(0, 220),
+    content: `${header}\n\n${text}`,
+    sourceUrl,
+    tags: ["X", author],
+  };
+}
+
+/* ---------------- 通用网页 ---------------- */
+
 async function fromWebpage(url: string): Promise<ImportedContent> {
   const html = await fetchText(url);
   const $ = load(html);
@@ -104,7 +200,7 @@ async function fromWebpage(url: string): Promise<ImportedContent> {
   };
 }
 
-/** 根据链接类型抓取内容：GitHub 仓库走 API + README，其余走网页解析 */
+/** 根据链接类型分发：GitHub → API + README；X → fxtwitter；其余 → 网页解析 */
 export async function importFromUrl(rawUrl: string): Promise<ImportedContent> {
   let url: URL;
   try {
@@ -120,5 +216,11 @@ export async function importFromUrl(rawUrl: string): Promise<ImportedContent> {
   if (url.hostname === "github.com" && github) {
     return fromGithub(github[1], github[2].replace(/\.git$/, ""), url.toString());
   }
+
+  const xPost = url.pathname.match(/^\/([^/]+)\/status\/(\d+)/);
+  if (["x.com", "www.x.com", "twitter.com", "www.twitter.com"].includes(url.hostname) && xPost) {
+    return fromX(xPost[1], xPost[2], url.toString());
+  }
+
   return fromWebpage(url.toString());
 }
