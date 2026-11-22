@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { getAllArticles, getArticleBySlug } from "@/lib/queries";
 import { createMetadata, JsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -22,8 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  if (!article) return createMetadata({ title: "资讯未找到", path: `/news/${slug}` });
-
+  if (!article) return createMetadata({ title: "条目未找到", path: `/news/${slug}` });
   return createMetadata({
     title: article.title,
     description: article.summary,
@@ -60,56 +57,47 @@ export default async function ArticlePage({
   };
 
   return (
-    <article className="container max-w-3xl py-16 sm:py-20">
+    <article className="container max-w-3xl py-20 sm:py-28">
       <JsonLd schema={articleJsonLd} />
-      <Button render={<Link href="/news" />} variant="ghost" size="sm" className="-ml-2">
-        <ArrowLeft />
-        返回资讯
-      </Button>
+      <Link href="/news" className="flex items-center gap-2 index-num transition-colors hover:text-primary">
+        <ArrowLeft className="size-3.5" /> 返回日志
+      </Link>
 
-      <header className="mt-8 border-b pb-8">
-        <div className="flex flex-wrap items-center gap-2">
-          {article.tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="font-normal">
-              {tag}
-            </Badge>
-          ))}
+      <header className="mt-12 border-b pb-10" style={{ borderColor: "var(--border)" }}>
+        <div className="flex items-center gap-3">
+          <span className="index-num text-primary">03 / JOURNAL ENTRY</span>
           {article.source === "rss" && (
-            <Badge variant="outline" className="font-normal">聚合内容</Badge>
+            <span className="index-num border px-1.5 py-0.5" style={{ borderColor: "var(--border)" }}>RSS 聚合</span>
           )}
         </div>
-        <h1 className="mt-5 text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+        <h1 className="mt-6 text-balance text-3xl font-semibold leading-tight tracking-[-0.03em] sm:text-4xl">
           {article.title}
         </h1>
-        <p className="mt-4 text-base leading-7 text-muted-foreground">{article.summary}</p>
-        <time dateTime={article.publishedAt.toISOString()} className="mt-5 block text-xs text-muted-foreground">
-          {dateFormatter.format(article.publishedAt)}
-          {article.sourceUrl && ` · 原文：${new URL(article.sourceUrl).hostname}`}
-        </time>
+        <p className="mt-5 text-sm leading-7 text-muted-foreground">{article.summary}</p>
+        <div className="index-num mt-6 flex flex-wrap gap-x-6 gap-y-2">
+          <time dateTime={article.publishedAt.toISOString()}>{dateFormatter.format(article.publishedAt)}</time>
+          {article.tags.map((tag) => <span key={tag}>#{tag}</span>)}
+          {article.sourceUrl && <span>源：{new URL(article.sourceUrl).hostname}</span>}
+        </div>
       </header>
 
-      <div className="mt-10 space-y-5 text-[15px] leading-8 text-foreground/90">
+      <div className="mt-10 space-y-6 text-[15px] leading-8 text-foreground/90">
         {article.content.split(/\n\n+/).map((paragraph, index) => (
-          <p key={index} className="whitespace-pre-line">
-            {paragraph}
-          </p>
+          <p key={index} className="whitespace-pre-line">{paragraph}</p>
         ))}
       </div>
 
       {article.sourceUrl && (
-        <div className="mt-12 rounded-xl border bg-card p-5">
-          <p className="text-xs text-muted-foreground">
-            本文为聚合摘要，版权归原作者所有。点击下方按钮阅读原文。
-          </p>
-          <Button
-            render={<a href={article.sourceUrl} target="_blank" rel="noopener noreferrer" />}
-            variant="outline"
-            size="sm"
-            className="mt-3"
+        <div className="mt-14 border-t pt-6" style={{ borderColor: "var(--border)" }}>
+          <p className="text-xs text-muted-foreground">本文为聚合摘要，版权归原作者所有。</p>
+          <a
+            href={article.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-2 index-num transition-colors hover:text-primary"
           >
-            阅读原文
-            <ExternalLink />
-          </Button>
+            阅读原文 <ExternalLink className="size-3.5" />
+          </a>
         </div>
       )}
     </article>

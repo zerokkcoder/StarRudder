@@ -125,9 +125,23 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 
 > 注意：本机 `coss.com` 被网络阻断，后续如需新增 coss 组件，继续使用官方 GitHub registry JSON 本地提取的方式。
 
+### 设计重构（M1 之后，已完成）
+
+- 用户反馈原布局太普遍，新建完整设计规范 [docs/DESIGN.md](DESIGN.md)
+- 概念：**Chart & Ledger（海图与索引）** —— 左侧固定导航轨道 + 编辑式首屏 + 罗盘方位图 + 编号索引行
+- 已重构：全局令牌（4px 小圆角、无阴影、单强调色、海图点阵纹理）、SiteChrome 双端导航、HeroCompass、SectionHeading、SiteLedger、命令检索弹窗、页脚 Colophon、各页面排版
+- 内容仍为服务端真实链接与文本，SEO 无退化
+
+### M2 导航模块（已完成）
+
+- [x] 分类筛选：`/sites?category=xxx`，服务端过滤，每个分类可索引
+- [x] 关键词检索：`/sites?q=xxx`，与分类组合
+- [x] 点击计数：`/go/{slug}` 302 跳转 + 原子自增（已实测 1280 → 1281）
+- [x] 提交表单：Server Action 写入 `submissions` 表
+- [x] 种子数据扩充至 15 个站点 / 5 个方位分类
+
 ### 待办
 
-- M2 导航模块增强：搜索筛选、分类 Tab、点击计数、提交审核流程
 - M3 资讯与友链：RSS 抓取任务、Tiptap 编辑器、友链申请审核
-- M4 后台管理：鉴权 + CRUD + 仪表盘
+- M4 后台管理：鉴权 + CRUD + 仪表盘（含 submissions 审核）
 - M5 SEO 深化 + 上线部署

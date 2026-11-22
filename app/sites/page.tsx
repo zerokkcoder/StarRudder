@@ -1,89 +1,97 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { getAllSites, getSiteCategories } from "@/lib/queries";
+import { ArrowRight } from "lucide-react";
+import { SectionHeading } from "@/components/section-heading";
+import { SiteLedger } from "@/components/site-ledger";
+import { getAllSites, getSiteCategories, getSitesByCategory } from "@/lib/queries";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: "站点导航",
-  description: "星舵站点导航：精选 AI 工具、设计灵感、开发资源与效率工具，按分类快速发现好站。",
+  description: "星舵站点导航：按方位分类浏览 AI 工具、设计灵感、开发资源与效率工具，每一条都经过人工筛选。",
   path: "/sites",
 });
 
-export default async function SitesPage() {
-  const [sites, categories] = await Promise.all([getAllSites(), getSiteCategories()]);
+export default async function SitesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string; q?: string }>;
+}) {
+  const { category = "all", q = "" } = await searchParams;
+  const [allSites, categories] = await Promise.all([
+    getAllSites(),
+    getSiteCategories(),
+  ]);
+  const sites = await getSitesByCategory(category, q);
+
+  const countFor = (slug: string) =>
+    slug === "all"
+      ? allSites.length
+      : allSites.filter((site) => {
+          const cat = categories.find((c) => c.id === site.categoryId);
+          return cat?.slug === slug;
+        }).length;
 
   return (
-    <div className="container py-16 sm:py-20">
-      <header className="max-w-2xl">
-        <p className="text-xs font-medium tracking-[0.18em] text-primary uppercase">Directory</p>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">站点导航</h1>
-        <p className="mt-4 text-base leading-7 text-muted-foreground">
-          按分类浏览，每一条都经过人工筛选。找不到想要的？欢迎<span className="text-foreground">提交站点</span>。
+    <div className="container py-20 sm:py-28">
+      <header>
+        <div className="flex items-center gap-3">
+          <span className="index-num text-primary">02 / DIRECTORY</span>
+          <span className="index-num uppercase tracking-[0.2em]">Bearings & entries</span>
+        </div>
+        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.03em] sm:text-5xl">站点索引</h1>
+        <p className="mt-4 max-w-xl text-sm leading-7 text-muted-foreground">
+          按方位分类浏览，或使用检索缩小范围。每条索引都指向 `/go` 计数跳转，点击后在新标签页打开。
         </p>
       </header>
 
-      <div className="mt-12 space-y-14">
-        {categories.map((category) => {
-          const group = sites.filter((site) => site.categoryId === category.id);
-          if (group.length === 0) return null;
-          return (
-            <section key={category.id} aria-labelledby={`category-${category.slug}`}>
-              <div className="flex items-baseline justify-between border-b pb-3">
-                <h2 id={`category-${category.slug}`} className="text-lg font-semibold tracking-tight">
-                  {category.name}
-                </h2>
-                <span className="text-xs text-muted-foreground">{group.length} 个站点</span>
-              </div>
-              <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {group.map((site) => (
-                  <li key={site.id}>
-                    <a
-                      href={site.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-start gap-3 rounded-xl border bg-card p-4 transition-colors hover:border-primary/40"
-                    >
-                      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-primary">
-                        {site.name.slice(0, 1).toUpperCase()}
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="flex items-center gap-1.5 text-sm font-medium">
-                          {site.name}
-                          <ArrowUpRight className="size-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
-                        </span>
-                        <span className="mt-1 line-clamp-2 block text-xs leading-5 text-muted-foreground">
-                          {site.description}
-                        </span>
-                        {site.tags.length > 0 && (
-                          <span className="mt-2 flex flex-wrap gap-1">
-                            {site.tags.slice(0, 3).map((tag) => (
-                              <Badge key={tag} variant="secondary" className="text-[10px] font-normal">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </span>
-                        )}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })}
+      <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 border-b pb-4" style={{ borderColor: "var(--border)" }}>
+        {[{ slug: "all", name: "全部" }, ...categories.map((c) => ({ slug: c.slug, name: c.name }))].map((item) => (
+          <Link
+            key={item.slug}
+            href={`/sites?category=${item.slug}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
+            className={`flex items-baseline gap-1.5 border-b-2 pb-1 text-xs transition-colors ${
+              category === item.slug
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {item.name}
+            <span className="index-num">{String(countFor(item.slug)).padStart(2, "0")}</span>
+          </Link>
+        ))}
       </div>
 
-      <div className="mt-16 flex flex-wrap items-center gap-3 rounded-xl border bg-card p-6">
-        <div className="flex-1">
-          <h2 className="text-sm font-medium">没有找到你常去的站点？</h2>
-          <p className="mt-1 text-xs text-muted-foreground">提交给我们，审核通过后会收录进导航。</p>
-        </div>
-        <Button render={<Link href="/submit" />} variant="outline" size="sm">
-          提交站点
-        </Button>
+      <form action="/sites" method="get" className="mt-5 flex max-w-md items-center gap-3">
+        <input type="hidden" name="category" value={category} />
+        <label htmlFor="site-q" className="index-num shrink-0">QUERY</label>
+        <input
+          id="site-q"
+          name="q"
+          defaultValue={q}
+          placeholder="输入关键词检索索引…"
+          className="h-9 min-w-0 flex-1 border-b bg-transparent text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+          style={{ borderColor: "var(--border)" }}
+        />
+        <button type="submit" className="index-num transition-colors hover:text-primary">
+          检索 <ArrowRight className="inline size-3" />
+        </button>
+      </form>
+
+      <section className="mt-10">
+        <SectionHeading
+          number={String(categories.findIndex((c) => c.slug === category) + 1).padStart(2, "0")}
+          label={category === "all" ? "All bearings" : category}
+          title={category === "all" ? "全部条目" : (categories.find((c) => c.slug === category)?.name ?? "索引")}
+        />
+        <SiteLedger sites={sites} />
+      </section>
+
+      <div className="mt-16 flex flex-wrap items-center gap-4 border-t pt-8" style={{ borderColor: "var(--border)" }}>
+        <p className="flex-1 text-xs text-muted-foreground">没有找到你常去的站点？提交给我们，审核后收录。</p>
+        <Link href="/submit" className="flex items-center gap-2 index-num transition-colors hover:text-primary">
+          提交条目 <ArrowRight className="size-3.5" />
+        </Link>
       </div>
     </div>
   );

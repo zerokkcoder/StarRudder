@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowUpRight, FileText, Globe2, Search } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,9 +26,13 @@ type SearchItem = {
 export function SearchDialog({
   sites,
   articles,
+  trigger,
+  triggerClassName,
 }: {
   sites: { name: string; slug: string; url: string; description: string }[];
   articles: { title: string; slug: string; summary: string }[];
+  trigger?: ReactNode;
+  triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -72,18 +77,29 @@ export function SearchDialog({
 
   return (
     <>
-      <Button
-        variant="outline"
-        onClick={() => setOpen(true)}
-        className="h-9 w-full justify-start gap-2 rounded-lg px-3 text-muted-foreground sm:w-64"
-      >
-        <Search className="size-4" />
-        <span className="flex-1 text-left">搜索站点与资讯…</span>
-        <KbdGroup>
-          <Kbd>⌘</Kbd>
-          <Kbd>K</Kbd>
-        </KbdGroup>
-      </Button>
+      {trigger ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className={triggerClassName}
+          aria-label="打开全站搜索"
+        >
+          {trigger}
+        </button>
+      ) : (
+        <Button
+          variant="outline"
+          onClick={() => setOpen(true)}
+          className="h-9 w-full justify-start gap-2 px-3 text-muted-foreground sm:w-64"
+        >
+          <Search className="size-4" />
+          <span className="flex-1 text-left">搜索站点与资讯…</span>
+          <KbdGroup>
+            <Kbd>⌘</Kbd>
+            <Kbd>K</Kbd>
+          </KbdGroup>
+        </Button>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogPopup className="max-w-xl p-0">
@@ -91,13 +107,17 @@ export function SearchDialog({
             <DialogTitle>全站搜索</DialogTitle>
             <DialogDescription>搜索站点与资讯</DialogDescription>
           </DialogHeader>
+          <div className="flex items-center gap-3 border-b px-4 py-3">
+            <span className="index-num">SEARCH / 索引检索</span>
+            <span className="ml-auto index-num">⌘K</span>
+          </div>
           <div className="p-2">
             <Input
               autoFocus
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="搜索站点、工具、资讯…"
-              className="border-transparent shadow-none"
+              className="border-transparent rounded-none shadow-none px-2"
             />
           </div>
           <div className="max-h-96 overflow-y-auto border-t px-2 py-2">
@@ -107,12 +127,15 @@ export function SearchDialog({
               </p>
             ) : (
               <ul className="space-y-1">
-                {items.map((item) => {
+                {items.map((item, index) => {
                   const Icon = item.kind === "site" ? Globe2 : FileText;
                   const content = (
                     <>
-                      <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-                        <Icon className="size-4" />
+                      <span className="index-num w-5 shrink-0">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className="flex size-7 shrink-0 items-center justify-center border text-muted-foreground">
+                        <Icon className="size-3.5" />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-medium">
@@ -123,12 +146,12 @@ export function SearchDialog({
                         </span>
                       </span>
                       {item.external && (
-                        <ArrowUpRight className="size-4 text-muted-foreground" />
+                        <ArrowUpRight className="size-3.5 text-muted-foreground" />
                       )}
                     </>
                   );
                   const className =
-                    "flex items-center gap-3 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-accent";
+                    "flex items-center gap-3 px-2.5 py-2 text-left transition-colors hover:bg-accent/60 group";
                   return (
                     <li key={`${item.kind}-${item.href}`}>
                       {item.external ? (

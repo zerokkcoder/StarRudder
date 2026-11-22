@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { getAllArticles } from "@/lib/queries";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "资讯",
-  description: "星舵资讯：科技趋势、AI 动态与精选好文，人工精选与优质来源聚合。",
+  title: "航海日志",
+  description: "星舵航海日志：科技趋势、AI 动态与精选好文，原创与聚合内容并存。",
   path: "/news",
 });
 
@@ -21,41 +20,45 @@ export default async function NewsPage() {
   const articles = await getAllArticles();
 
   return (
-    <div className="container py-16 sm:py-20">
-      <header className="max-w-2xl">
-        <p className="text-xs font-medium tracking-[0.18em] text-primary uppercase">Journal</p>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">资讯</h1>
-        <p className="mt-4 text-base leading-7 text-muted-foreground">
-          值得花时间读的内容：原创精选与优质来源聚合，聚合内容仅展示摘要并标注来源。
+    <div className="container py-20 sm:py-28">
+      <header>
+        <div className="flex items-center gap-3">
+          <span className="index-num text-primary">03 / JOURNAL</span>
+          <span className="index-num uppercase tracking-[0.2em]">Field notes</span>
+        </div>
+        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.03em] sm:text-5xl">航海日志</h1>
+        <p className="mt-4 max-w-xl text-sm leading-7 text-muted-foreground">
+          值得花时间读的内容。原创为全文，聚合内容仅保留摘要并标注来源。
         </p>
       </header>
 
-      <ul className="mt-12 divide-y border-t">
-        {articles.map((article) => (
-          <li key={article.id}>
-            <Link href={`/news/${article.slug}`} className="group grid gap-2 py-6 sm:grid-cols-[7rem_1fr_auto] sm:gap-8">
-              <time dateTime={article.publishedAt.toISOString()} className="text-xs tabular-nums text-muted-foreground">
+      <ul className="mt-12 border-t" style={{ borderColor: "var(--border)" }}>
+        {articles.map((article, index) => (
+          <li key={article.id} className="group border-b" style={{ borderColor: "var(--border)" }}>
+            <Link href={`/news/${article.slug}`} className="flex items-start gap-5 py-6 transition-colors hover:bg-accent/40 sm:gap-10">
+              <span className="index-num w-6 shrink-0 group-hover:text-primary">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <time dateTime={article.publishedAt.toISOString()} className="index-num hidden w-28 shrink-0 sm:block">
                 {dateFormatter.format(article.publishedAt)}
               </time>
-              <div>
-                <h2 className="text-lg font-medium transition-colors group-hover:text-primary">
-                  {article.title}
-                </h2>
-                <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
-                  {article.summary}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {article.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="font-normal">
-                      {tag}
-                    </Badge>
-                  ))}
+              <span className="min-w-0 flex-1">
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="text-base font-medium transition-colors group-hover:text-primary sm:text-lg">
+                    {article.title}
+                  </span>
                   {article.source === "rss" && (
-                    <Badge variant="outline" className="font-normal">聚合</Badge>
+                    <span className="index-num border px-1.5 py-0.5" style={{ borderColor: "var(--border)" }}>RSS</span>
                   )}
-                </div>
-              </div>
-              <ArrowRight className="hidden size-4 self-center text-muted-foreground transition-transform group-hover:translate-x-1 sm:block" />
+                </span>
+                <span className="mt-2 block text-xs leading-6 text-muted-foreground sm:text-sm">
+                  {article.summary}
+                </span>
+                <span className="index-num mt-3 block sm:hidden">
+                  {dateFormatter.format(article.publishedAt)}
+                </span>
+              </span>
+              <ArrowRight className="size-3.5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
             </Link>
           </li>
         ))}

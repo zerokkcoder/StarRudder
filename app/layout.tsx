@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/inter";
 import "./globals.css";
+import { SiteChrome } from "@/components/site-chrome";
 import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 import { getAllArticles, getAllSites } from "@/lib/queries";
 import { createMetadata, JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -36,9 +36,9 @@ export default async function RootLayout({
 
   return (
     <html lang="zh-CN" suppressHydrationWarning data-scroll-behavior="smooth">
-      <body className="flex min-h-screen flex-col">
+      <body className="min-h-screen">
         <JsonLd schema={[websiteJsonLd, organizationJsonLd]} />
-        <SiteHeader
+        <SiteChrome
           searchData={{
             sites: allSites.map(({ name, slug, url, description }) => ({
               name,
@@ -53,8 +53,10 @@ export default async function RootLayout({
             })),
           }}
         />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <div className="lg:pl-[232px]">
+          <main className="min-h-[70vh]">{children}</main>
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );

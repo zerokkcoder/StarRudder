@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Compass, Newspaper, Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardPanel,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { getFeaturedSites, getFriendLinks, getLatestArticles } from "@/lib/queries";
+import { ArrowRight } from "lucide-react";
+import { CompassMark } from "@/components/compass-mark";
+import { HeroCompass } from "@/components/hero-compass";
+import { SectionHeading } from "@/components/section-heading";
+import { SiteLedger } from "@/components/site-ledger";
+import { getFeaturedSites, getFriendLinks, getLatestArticles, getSiteCategories } from "@/lib/queries";
 import { createMetadata, JsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
@@ -26,19 +20,12 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   day: "2-digit",
 });
 
-function hostname(url: string) {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
-}
-
 export default async function HomePage() {
-  const [featuredSites, latestArticles, links] = await Promise.all([
+  const [featuredSites, latestArticles, links, categories] = await Promise.all([
     getFeaturedSites(),
     getLatestArticles(),
     getFriendLinks(),
+    getSiteCategories(),
   ]);
 
   const itemListJsonLd = {
@@ -57,181 +44,123 @@ export default async function HomePage() {
     <>
       <JsonLd schema={itemListJsonLd} />
 
-      {/* Hero：大留白，一句主张，一个动作 */}
-      <section className="container pt-20 pb-16 sm:pt-28 sm:pb-24">
-        <div className="flex items-center gap-2 text-xs font-medium tracking-[0.18em] text-primary uppercase">
-          <Compass className="size-3.5" />
-          Star Rudder / 精选导航
-        </div>
-        <h1 className="mt-6 max-w-3xl text-balance text-4xl leading-[1.15] font-semibold tracking-[-0.03em] sm:text-6xl">
-          在信息的海洋里，
-          <br />
-          找到值得停泊的<a className="text-primary">好站</a>。
-        </h1>
-        <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-          {siteConfig.slogan}。我们只收录真正有用的工具与内容，少而精，每一条都值得收藏。
-        </p>
-        <div className="mt-9 flex flex-wrap items-center gap-3">
-          <Button render={<Link href="/sites" />} size="lg">
-            浏览站点导航
-            <ArrowRight />
-          </Button>
-          <Button render={<Link href="/news" />} variant="outline" size="lg">
-            看看最新资讯
-          </Button>
+      {/* 01 / PREFACE */}
+      <section data-section="hero" className="chart-grid relative overflow-hidden border-b" style={{ borderColor: "var(--border)" }}>
+        <div className="container grid items-center gap-12 py-24 sm:py-32 lg:grid-cols-[1fr_auto] lg:py-40">
+          <div>
+            <div className="rise flex items-center gap-3">
+              <CompassMark className="size-5 text-primary" />
+              <span className="index-num uppercase tracking-[0.2em] text-primary">
+                01 / Preface — Index of the useful web
+              </span>
+            </div>
+            <h1 className="mt-8 text-balance text-[2.6rem] leading-[1.12] font-semibold tracking-[-0.035em] sm:text-6xl lg:text-[4.2rem]">
+              <span className="rise rise-delay-1 block">在信息的海洋里，</span>
+              <span className="rise rise-delay-2 block">找到值得停泊的</span>
+              <span className="rise rise-delay-3 block text-primary">好站。</span>
+            </h1>
+            <p className="rise rise-delay-3 mt-8 max-w-lg text-sm leading-7 text-muted-foreground sm:text-base">
+              {siteConfig.slogan}。这是一份持续修订的索引，只收录真正值得再次打开的工具与内容。
+            </p>
+
+            <div className="rise rise-delay-3 mt-12 flex flex-wrap items-center gap-x-10 gap-y-4 border-t pt-6" style={{ borderColor: "var(--border)" }}>
+              <div>
+                <p className="index-num">INDEXED</p>
+                <p className="mt-1 text-lg font-medium tabular-nums">{String(featuredSites.length).padStart(2, "0")}</p>
+              </div>
+              <div>
+                <p className="index-num">BEARINGS</p>
+                <p className="mt-1 text-lg font-medium tabular-nums">{String(categories.length).padStart(2, "0")}</p>
+              </div>
+              <div>
+                <p className="index-num">JOURNAL</p>
+                <p className="mt-1 text-lg font-medium tabular-nums">{String(latestArticles.length).padStart(2, "0")}</p>
+              </div>
+              <Link href="/sites" className="group ml-auto flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-primary">
+                进入索引
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </div>
+
+          <HeroCompass />
         </div>
       </section>
 
-      <div className="container">
-        <Separator />
-      </div>
-
-      {/* 精选站点 */}
-      <section className="container py-16 sm:py-20" aria-labelledby="featured-heading">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-primary uppercase">
-              <Sparkles className="size-3.5" />
-              Featured
-            </div>
-            <h2 id="featured-heading" className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-              精选站点
-            </h2>
-          </div>
-          <Link
-            href="/sites"
-            className="group flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            全部站点
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredSites.map((site) => (
-            <a
-              key={site.id}
-              href={site.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-            >
-              <Card className="h-full transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md">
-                <CardHeader>
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-primary">
-                      {site.name.slice(0, 1).toUpperCase()}
-                    </div>
-                    <ArrowUpRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                  </div>
-                  <CardTitle className="mt-3 flex items-center gap-2 text-base">
-                    {site.name}
-                    <span className="text-xs font-normal text-muted-foreground">
-                      {hostname(site.url)}
-                    </span>
-                  </CardTitle>
-                  <CardDescription className="line-clamp-2 leading-6">
-                    {site.description}
-                  </CardDescription>
-                </CardHeader>
-                {site.tags.length > 0 && (
-                  <CardPanel className="flex flex-wrap gap-1.5 pt-0">
-                    {site.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="font-normal">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </CardPanel>
-                )}
-              </Card>
-            </a>
-          ))}
-        </div>
+      {/* 02 / SELECTED HARBORS */}
+      <section data-section="featured" className="container py-20 sm:py-28">
+        <SectionHeading
+          number="02"
+          label="Selected Harbors"
+          title="精选索引"
+          id="featured-heading"
+          action={
+            <Link href="/sites" className="group flex items-center gap-2 index-num transition-colors hover:text-primary">
+              ALL ENTRIES
+              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          }
+        />
+        <SiteLedger sites={featuredSites} />
       </section>
 
-      {/* 最新资讯 */}
-      <section className="container py-16 sm:py-20" aria-labelledby="news-heading">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-primary uppercase">
-              <Newspaper className="size-3.5" />
-              Journal
-            </div>
-            <h2 id="news-heading" className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-              最新资讯
-            </h2>
-          </div>
-          <Link
-            href="/news"
-            className="group flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            全部资讯
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        </div>
-
-        <ul className="divide-y">
-          {latestArticles.map((article) => (
-            <li key={article.id}>
-              <Link
-                href={`/news/${article.slug}`}
-                className="group flex flex-col gap-2 py-5 sm:flex-row sm:items-baseline sm:gap-8"
-              >
-                <time
-                  dateTime={article.publishedAt.toISOString()}
-                  className="shrink-0 text-xs tabular-nums text-muted-foreground sm:w-28"
-                >
+      {/* 03 / JOURNAL */}
+      <section data-section="journal" className="container pb-20 sm:pb-28">
+        <SectionHeading
+          number="03"
+          label="The Journal"
+          title="航海日志"
+          id="news-heading"
+          action={
+            <Link href="/news" className="group flex items-center gap-2 index-num transition-colors hover:text-primary">
+              ALL ENTRIES
+              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          }
+        />
+        <ul className="border-t" style={{ borderColor: "var(--border)" }}>
+          {latestArticles.map((article, index) => (
+            <li key={article.id} className="group border-b" style={{ borderColor: "var(--border)" }}>
+              <Link href={`/news/${article.slug}`} className="flex items-start gap-5 py-5 transition-colors hover:bg-accent/40 sm:gap-8">
+                <span className="index-num w-6 shrink-0 group-hover:text-primary">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <time dateTime={article.publishedAt.toISOString()} className="index-num hidden w-24 shrink-0 sm:block">
                   {dateFormatter.format(article.publishedAt)}
                 </time>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-base font-medium transition-colors group-hover:text-primary">
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-medium transition-colors group-hover:text-primary">
                     {article.title}
-                  </h3>
-                  <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">
-                    {article.summary}
-                  </p>
-                </div>
-                {article.source === "rss" && (
-                  <Badge variant="outline" className="w-fit shrink-0 font-normal">
-                    聚合
-                  </Badge>
-                )}
+                  </span>
+                  <span className="mt-1 block truncate text-xs text-muted-foreground">{article.summary}</span>
+                </span>
+                <ArrowRight className="size-3.5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
               </Link>
             </li>
           ))}
         </ul>
       </section>
 
-      {/* 友情链接 */}
-      <section className="container py-16 sm:py-20" aria-labelledby="links-heading">
-        <div className="rounded-2xl border bg-card px-6 py-8 sm:px-10 sm:py-10">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <h2 id="links-heading" className="text-lg font-semibold tracking-tight">
-                友情链接
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                和这些优秀的站点一起，探索更大的世界。
-              </p>
-            </div>
-            <Button render={<Link href="/links" />} variant="ghost" size="sm">
-              查看全部
-              <ArrowRight />
-            </Button>
-          </div>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {links.map((link) => (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border bg-background px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
+      {/* 04 / FRIENDS */}
+      <section data-section="friends" className="container pb-24 sm:pb-32">
+        <SectionHeading number="04" label="Friendly Beacons" title="友链灯塔" id="links-heading" />
+        <div className="grid gap-x-12 gap-y-6 sm:grid-cols-2">
+          {links.map((link) => (
+            <a
+              key={link.id}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-start gap-4 border-b pb-4 transition-colors hover:border-primary"
+              style={{ borderColor: "var(--border)" }}
+            >
+              <span className="index-num group-hover:text-primary">↗</span>
+              <span>
+                <span className="block text-sm font-medium group-hover:text-primary">{link.name}</span>
+                <span className="mt-1 block text-xs text-muted-foreground">{link.description}</span>
+              </span>
+            </a>
+          ))}
         </div>
       </section>
     </>
