@@ -208,7 +208,12 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - 用户可见文案「资讯」改为「内容」（路由 `/news` 保持不变，避免影响 SEO）
 - 链接导入增强：GitHub 改用 API `/readme`（raw）+ `/topics`，补全语言/星标/许可/主页/主题与完整 README；X 推文改用 fxtwitter 镜像接口，长文直接取 `article.content.blocks`，实测可抓回 6000+ 字正文
 - 聚合内容补全正文：优先用 feed 的 `content:encoded`/`content` 转纯文本，不足则回源抓网页正文；新增 `pnpm rss:backfill` 补全历史条目。实测 7 源新增 82 条，正文平均约 3.9KB（单条最长 32KB）
-- 订阅源换成探测通过的中文前沿科技源：Solidot、cnBeta、IT之家、爱范儿、InfoQ 中文、量子位、OSCHINA（覆盖海外头条翻译、AI、开源与开发资讯）
+- 按用户聚焦方向重建订阅源：清空旧聚合内容与订阅源，新增 4 个资讯分类（编程开发 / AI 进展 / 游戏开发 / 产品设计），共 12 个可用源：
+  - 编程开发：OSCHINA、掘金、Smashing Magazine、A List Apart（InfoQ 中文因抓取内容不全已移除）
+  - AI 进展：量子位、新智元
+  - 游戏开发：机核、Gamelook
+  - 产品设计：少数派、Product Hunt、UX Collective
+  - 探测后排除：机器之心（XML 错误）、HuggingFace/OpenAI/Google AI/Unity（网络不可达）、GameDeveloper（403）、indienova/游戏葡萄（404）、优设/设计癖（格式错误）
 - 链接导入表单去掉「标签」，改为「作者」（文章表新增 `author` 字段，详情页展示）；深色下原生下拉框设置 `color-scheme: dark`，不再白色突兀
 - 前台首页精简为只展示站点索引列表（移除内容列表与友情链接区块）
 - 前端左侧导航去掉「首页」，站点即首页：`站点 / 内容 / 友链`；`/` 与 `/sites` 均高亮「站点」

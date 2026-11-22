@@ -20,7 +20,10 @@ const siteCategoryData = [
   { name: "开发资源", slug: "dev", icon: "Code2", type: "site", sort: 3 },
   { name: "效率办公", slug: "productivity", icon: "Zap", type: "site", sort: 4 },
   { name: "学习成长", slug: "learning", icon: "BookOpen", type: "site", sort: 5 },
-  { name: "科技资讯", slug: "tech-news", icon: "Newspaper", type: "news", sort: 6 },
+  { name: "编程开发", slug: "dev-news", icon: "Code2", type: "news", sort: 6 },
+  { name: "AI 进展", slug: "ai-progress", icon: "Sparkles", type: "news", sort: 7 },
+  { name: "游戏开发", slug: "game-dev", icon: "Gamepad2", type: "news", sort: 8 },
+  { name: "产品设计", slug: "product-design", icon: "PenTool", type: "news", sort: 9 },
 ];
 
 const siteData = [
@@ -110,7 +113,7 @@ async function main() {
       slug: article.slug,
       summary: article.summary,
       content: article.content,
-      categoryId: catId("tech-news"),
+      categoryId: catId("dev-news"),
       tags: article.tags,
       source: article.source,
       sourceUrl: "sourceUrl" in article ? article.sourceUrl : null,
@@ -119,13 +122,17 @@ async function main() {
   );
 
   await db.insert(rssSources).values([
-    { name: "Solidot", url: "https://www.solidot.org/index.rss", categoryId: catId("tech-news") },
-    { name: "cnBeta", url: "https://rss.cnbeta.com.tw/rss", categoryId: catId("tech-news") },
-    { name: "IT之家", url: "https://www.ithome.com/rss/", categoryId: catId("tech-news") },
-    { name: "爱范儿", url: "https://www.ifanr.com/feed", categoryId: catId("tech-news") },
-    { name: "InfoQ 中文", url: "https://www.infoq.cn/feed", categoryId: catId("tech-news") },
-    { name: "量子位", url: "https://www.qbitai.com/feed", categoryId: catId("tech-news") },
-    { name: "OSCHINA", url: "https://www.oschina.net/news/rss", categoryId: catId("tech-news") },
+    { name: "OSCHINA", url: "https://www.oschina.net/news/rss", categoryId: catId("dev-news") },
+    { name: "掘金", url: "https://juejin.cn/rss", categoryId: catId("dev-news") },
+    { name: "Smashing Magazine", url: "https://www.smashingmagazine.com/feed/", categoryId: catId("dev-news") },
+    { name: "A List Apart", url: "https://alistapart.com/main/feed/", categoryId: catId("dev-news") },
+    { name: "量子位", url: "https://www.qbitai.com/feed", categoryId: catId("ai-progress") },
+    { name: "新智元", url: "https://www.aiera.com.cn/feed", categoryId: catId("ai-progress") },
+    { name: "机核", url: "https://www.gcores.com/rss", categoryId: catId("game-dev") },
+    { name: "Gamelook", url: "http://www.gamelook.com.cn/feed", categoryId: catId("game-dev") },
+    { name: "少数派", url: "https://sspai.com/feed", categoryId: catId("product-design") },
+    { name: "Product Hunt", url: "https://www.producthunt.com/feed", categoryId: catId("product-design") },
+    { name: "UX Collective", url: "https://uxdesign.cc/feed", categoryId: catId("product-design") },
   ]);
 
   await db.insert(friendLinks).values([
