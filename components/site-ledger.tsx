@@ -51,7 +51,7 @@ export function SiteLedger({ sites }: { sites: Site[] }) {
             className="spotlight block h-full rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             <Card className="h-full rounded-lg transition-all duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/40">
-              <CardHeader className="p-3 pb-2">
+              <CardHeader className="flex-1 p-3 pb-2">
                 <div className="flex items-start justify-end">
                   <ArrowUpRight className="size-3.5 text-muted-foreground opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-primary" />
                 </div>
@@ -64,19 +64,17 @@ export function SiteLedger({ sites }: { sites: Site[] }) {
                     <span className="index-num block truncate text-[10px]">{hostname(site.url)}</span>
                   </span>
                 </div>
-                <CardDescription className="mt-2 line-clamp-2 text-[11px] leading-4">
+                <CardDescription className="mt-2 line-clamp-2 min-h-[32px] text-[11px] leading-4">
                   {site.description}
                 </CardDescription>
               </CardHeader>
-              {site.tags.length > 0 && (
-                <CardPanel className="flex flex-wrap gap-1 px-3 pb-3 pt-0">
-                  {site.tags.slice(0, 2).map((tag) => (
-                    <Badge key={tag} variant="secondary" className="px-1.5 py-0 text-[10px] font-normal">
-                      {tag}
-                    </Badge>
-                  ))}
-                </CardPanel>
-              )}
+              <CardPanel className="mt-auto flex flex-wrap gap-1 px-3 pb-3 pt-0">
+                {site.tags.slice(0, 2).map((tag) => (
+                  <Badge key={tag} variant="secondary" className="px-1.5 py-0 text-[10px] font-normal">
+                    {tag}
+                  </Badge>
+                ))}
+              </CardPanel>
             </Card>
           </a>
         </li>
