@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
-  // 默认深色；仅当用户明确保存过浅色时才切换
-  const [dark, setDark] = useState(true);
+  // SSR 默认浅色；仅当用户明确保存过深色时才切换（避免刷新闪黑）
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("star-rudder-theme");
-    const next = saved ? saved === "dark" : true;
+    const next = saved === "dark";
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
   }, []);
