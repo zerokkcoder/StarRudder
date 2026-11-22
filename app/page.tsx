@@ -5,6 +5,7 @@ import { CompassMark } from "@/components/compass-mark";
 import { HeroCompass } from "@/components/hero-compass";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteLedger } from "@/components/site-ledger";
+import { StatCounter } from "@/components/stat-counter";
 import { getFeaturedSites, getFriendLinks, getLatestArticles, getSiteCategories } from "@/lib/queries";
 import { createMetadata, JsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -46,7 +47,7 @@ export default async function HomePage() {
 
       {/* 01 / PREFACE */}
       <section data-section="hero" className="chart-grid relative overflow-hidden border-b" style={{ borderColor: "var(--border)" }}>
-        <div className="container grid items-center gap-12 py-24 sm:py-32 lg:grid-cols-[1fr_auto] lg:py-40">
+        <div className="container grid items-center gap-10 py-20 sm:py-24 lg:grid-cols-[1fr_auto] lg:py-28">
           <div>
             <div className="rise flex items-center gap-3">
               <CompassMark className="size-5 text-primary" />
@@ -54,28 +55,19 @@ export default async function HomePage() {
                 01 / Preface — Index of the useful web
               </span>
             </div>
-            <h1 className="mt-8 text-balance text-[2.6rem] leading-[1.12] font-semibold tracking-[-0.035em] sm:text-6xl lg:text-[4.2rem]">
+            <h1 className="mt-6 text-balance text-[2.5rem] leading-[1.08] font-semibold tracking-[-0.035em] sm:text-5xl lg:text-[3.9rem]">
               <span className="rise rise-delay-1 block">在信息的海洋里，</span>
               <span className="rise rise-delay-2 block">找到值得停泊的</span>
               <span className="rise rise-delay-3 block text-primary">好站。</span>
             </h1>
-            <p className="rise rise-delay-3 mt-8 max-w-lg text-sm leading-7 text-muted-foreground sm:text-base">
+            <p className="rise rise-delay-3 mt-6 max-w-lg text-sm leading-6 text-muted-foreground">
               {siteConfig.slogan}。这是一份持续修订的索引，只收录真正值得再次打开的工具与内容。
             </p>
 
-            <div className="rise rise-delay-3 mt-12 flex flex-wrap items-center gap-x-10 gap-y-4 border-t pt-6" style={{ borderColor: "var(--border)" }}>
-              <div>
-                <p className="index-num">INDEXED</p>
-                <p className="mt-1 text-lg font-medium tabular-nums">{String(featuredSites.length).padStart(2, "0")}</p>
-              </div>
-              <div>
-                <p className="index-num">BEARINGS</p>
-                <p className="mt-1 text-lg font-medium tabular-nums">{String(categories.length).padStart(2, "0")}</p>
-              </div>
-              <div>
-                <p className="index-num">JOURNAL</p>
-                <p className="mt-1 text-lg font-medium tabular-nums">{String(latestArticles.length).padStart(2, "0")}</p>
-              </div>
+            <div className="rise rise-delay-3 mt-10 flex flex-wrap items-center gap-x-9 gap-y-4 border-t pt-5" style={{ borderColor: "var(--border)" }}>
+              <StatCounter value={featuredSites.length} label="INDEXED" />
+              <StatCounter value={categories.length} label="BEARINGS" />
+              <StatCounter value={latestArticles.length} label="JOURNAL" />
               <Link href="/sites" className="group ml-auto flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-primary">
                 进入索引
                 <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
@@ -88,7 +80,7 @@ export default async function HomePage() {
       </section>
 
       {/* 02 / SELECTED HARBORS */}
-      <section data-section="featured" className="container py-20 sm:py-28">
+      <section data-section="featured" className="container py-16 sm:py-20">
         <SectionHeading
           number="02"
           label="Selected Harbors"
@@ -105,7 +97,7 @@ export default async function HomePage() {
       </section>
 
       {/* 03 / JOURNAL */}
-      <section data-section="journal" className="container pb-20 sm:pb-28">
+      <section data-section="journal" className="container pb-16 sm:pb-20">
         <SectionHeading
           number="03"
           label="The Journal"
@@ -142,7 +134,7 @@ export default async function HomePage() {
       </section>
 
       {/* 04 / FRIENDS */}
-      <section data-section="friends" className="container pb-24 sm:pb-32">
+      <section data-section="friends" className="container pb-20 sm:pb-24">
         <SectionHeading number="04" label="Friendly Beacons" title="友链灯塔" id="links-heading" />
         <div className="grid gap-x-12 gap-y-6 sm:grid-cols-2">
           {links.map((link) => (

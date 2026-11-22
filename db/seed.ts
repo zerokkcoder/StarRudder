@@ -241,8 +241,14 @@ async function main() {
 
   await db.insert(rssSources).values([
     {
-      name: "示例科技博客",
-      url: "https://example.com/feed.xml",
+      name: "Smashing Magazine",
+      url: "https://www.smashingmagazine.com/feed/",
+      categoryId: newsCategory[0].id,
+      status: "active",
+    },
+    {
+      name: "CSS-Tricks",
+      url: "https://css-tricks.com/feed/",
       categoryId: newsCategory[0].id,
       status: "active",
     },

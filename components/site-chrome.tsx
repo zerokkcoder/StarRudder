@@ -24,6 +24,21 @@ const sectionToHref: Record<string, string> = {
 export function SiteChrome({ searchData }: { searchData: SearchData }) {
   const pathname = usePathname();
   const [active, setActive] = useState(pathname === "/" ? "hero" : pathname);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max <= 0 ? 0 : Math.min((window.scrollY / max) * 100, 100));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
   useEffect(() => {
     if (pathname !== "/") {
@@ -49,8 +64,11 @@ export function SiteChrome({ searchData }: { searchData: SearchData }) {
   return (
     <>
       {/* 桌面：左侧固定导航轨道 */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[232px] flex-col border-r px-6 py-8 lg:flex" style={{ borderColor: "var(--border)" }}>
-        <Link href="/" className="flex items-center gap-3" aria-label="星舵首页">
+      <div className="fixed left-0 top-0 z-50 hidden h-[2px] w-[232px] lg:block" style={{ background: "var(--muted)" }}>
+        <div className="h-full bg-primary transition-[width] duration-150" style={{ width: `${progress}%` }} />
+      </div>
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[232px] flex-col border-r px-5 py-6 lg:flex" style={{ borderColor: "var(--border)" }}>
+        <Link href="/" className="flex items-center gap-2.5" aria-label="星舵首页">
           <span className="text-primary">
             <CompassMark className="size-8" />
           </span>
@@ -60,7 +78,7 @@ export function SiteChrome({ searchData }: { searchData: SearchData }) {
           </span>
         </Link>
 
-        <nav className="mt-16 flex flex-col gap-1" aria-label="主导航">
+        <nav className="mt-12 flex flex-col gap-0.5" aria-label="主导航">
           {siteConfig.nav.map((item, index) => {
             const isActive = active === item.href;
             return (

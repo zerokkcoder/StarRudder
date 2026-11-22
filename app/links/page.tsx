@@ -14,7 +14,7 @@ export default async function LinksPage() {
   const links = await getFriendLinks();
 
   return (
-    <div className="container py-20 sm:py-28">
+    <div className="container py-14 sm:py-20">
       <header>
         <div className="flex items-center gap-3">
           <span className="index-num text-primary">04 / BEACONS</span>

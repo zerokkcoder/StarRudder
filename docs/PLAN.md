@@ -140,8 +140,21 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - [x] 提交表单：Server Action 写入 `submissions` 表
 - [x] 种子数据扩充至 15 个站点 / 5 个方位分类
 
+### 设计 v1.1「紧凑海图」（已完成）
+
+- 用户反馈 v1.0 仍不够紧凑、缺少惊喜；设计规范升级至 v1.1，见 [DESIGN.md](DESIGN.md)
+- 紧凑化：区块留白 96–128px → 56–80px，索引行 72px → 56px，条目名称 14 → 15px，章节头间距收紧
+- 惊喜交互：指针聚光跟随、交互式罗盘（指针跟随鼠标 + 点击随机航向）、随机发现按钮（右下角 + 快捷键 R + 全屏航线动画）、数字滚动、资讯跑马灯、命令面板 ↑↓/Enter 与匹配高亮、左侧滚动进度条
+- 新增 `DevErrorFilter`：仅开发环境忽略浏览器扩展（如 MetaMask）注入脚本的 unhandled rejection，避免干扰调试
+
+### M3 资讯与友链（已完成）
+
+- [x] RSS 聚合：`lib/rss.ts` + `POST /api/rss/fetch`（Bearer CRON_SECRET）+ `pnpm rss:fetch`；按 sourceUrl 去重、仅沉淀摘要与原文链接；实测 2 源新增 24 条，二次抓取新增 0 条
+- [x] Tiptap 编辑器：`components/tiptap-editor.tsx`，已在后台「新建资讯」页接入，支持标题、加粗、列表、引用、代码块
+- [x] 友链/站点提交审核：JWT 会话鉴权（jose + httpOnly cookie）、`/login`、`/admin/submissions` 收录/忽略（友链写入 friend_links，站点写入 sites）、退出登录；端到端实测通过
+- [x] 新增秘钥：`CRON_SECRET`、`AUTH_SECRET`（见 `.env.example`）
+
 ### 待办
 
-- M3 资讯与友链：RSS 抓取任务、Tiptap 编辑器、友链申请审核
-- M4 后台管理：鉴权 + CRUD + 仪表盘（含 submissions 审核）
+- M4 后台完善：站点/分类/资讯/RSS 源 CRUD + 仪表盘（当前已有提交审核与新建资讯）
 - M5 SEO 深化 + 上线部署

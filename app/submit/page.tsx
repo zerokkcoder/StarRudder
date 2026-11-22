@@ -10,7 +10,7 @@ export const metadata: Metadata = createMetadata({
 
 export default function SubmitPage() {
   return (
-    <div className="container py-20 sm:py-28">
+    <div className="container py-14 sm:py-20">
       <header>
         <div className="flex items-center gap-3">
           <span className="index-num text-primary">05 / CONTRIBUTE</span>

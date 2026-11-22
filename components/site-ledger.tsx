@@ -1,4 +1,7 @@
+"use client";
+
 import { ArrowUpRight } from "lucide-react";
+import type { MouseEvent } from "react";
 import type { Site } from "@/db/schema";
 
 export function hostname(url: string) {
@@ -10,9 +13,15 @@ export function hostname(url: string) {
 }
 
 export function SiteLedger({ sites }: { sites: Site[] }) {
+  function spotlight(event: MouseEvent<HTMLAnchorElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+    event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
+  }
+
   if (sites.length === 0) {
     return (
-      <p className="border py-16 text-center text-sm text-muted-foreground" style={{ borderColor: "var(--border)" }}>
+      <p className="border py-14 text-center text-sm text-muted-foreground" style={{ borderColor: "var(--border)" }}>
         该航向暂无收录条目。
       </p>
     );
@@ -21,27 +30,32 @@ export function SiteLedger({ sites }: { sites: Site[] }) {
   return (
     <ul className="border-t" style={{ borderColor: "var(--border)" }}>
       {sites.map((site, index) => (
-        <li key={site.id} className="group border-b" style={{ borderColor: "var(--border)" }}>
+        <li
+          key={site.id}
+          className="group animate-row-in border-b"
+          style={{ borderColor: "var(--border)", animationDelay: `${Math.min(index * 28, 280)}ms` }}
+        >
           <a
             href={`/go/${site.slug}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-4 py-4 transition-colors hover:bg-accent/40 sm:gap-6"
+            onMouseMove={spotlight}
+            className="spotlight flex items-center gap-4 py-3 transition-colors hover:bg-accent/25 sm:gap-6"
           >
-            <span className="index-num w-6 shrink-0 group-hover:text-primary">
+            <span className="index-num w-6 shrink-0 transition-colors group-hover:text-primary">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span className="flex size-9 shrink-0 items-center justify-center border font-mono text-sm text-primary transition-colors group-hover:border-primary">
+            <span className="flex size-9 shrink-0 items-center justify-center border border-input font-mono text-sm text-primary transition-colors group-hover:border-primary">
               {site.name.slice(0, 1).toUpperCase()}
             </span>
             <span className="min-w-0 flex-1">
               <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-                <span className="text-sm font-medium transition-colors group-hover:text-primary">
+                <span className="text-[15px] font-medium transition-colors group-hover:text-primary">
                   {site.name}
                 </span>
                 <span className="index-num">{hostname(site.url)}</span>
               </span>
-              <span className="mt-1 block truncate text-xs text-muted-foreground">
+              <span className="mt-0.5 block truncate text-[13px] text-muted-foreground">
                 {site.description}
               </span>
             </span>

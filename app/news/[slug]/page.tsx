@@ -57,7 +57,7 @@ export default async function ArticlePage({
   };
 
   return (
-    <article className="container max-w-3xl py-20 sm:py-28">
+    <article className="container max-w-3xl py-14 sm:py-20">
       <JsonLd schema={articleJsonLd} />
       <Link href="/news" className="flex items-center gap-2 index-num transition-colors hover:text-primary">
         <ArrowLeft className="size-3.5" /> 返回日志

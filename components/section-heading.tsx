@@ -14,7 +14,7 @@ export function SectionHeading({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b pb-4" style={{ borderColor: "var(--border)" }}>
+    <div className="mb-6 flex flex-wrap items-end justify-between gap-6 border-b pb-3" style={{ borderColor: "var(--border)" }}>
       <div>
         <div className="flex items-center gap-3">
           <span className="index-num text-primary">{number}</span>

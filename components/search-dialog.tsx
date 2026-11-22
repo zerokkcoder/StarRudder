@@ -36,6 +36,23 @@ export function SearchDialog({
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => setActiveIndex(0), [query, open]);
+
+  function highlight(text: string) {
+    const term = query.trim();
+    if (!term) return text;
+    const at = text.toLowerCase().indexOf(term.toLowerCase());
+    if (at < 0) return text;
+    return (
+      <>
+        {text.slice(0, at)}
+        <mark className="bg-primary/15 text-primary">{text.slice(at, at + term.length)}</mark>
+        {text.slice(at + term.length)}
+      </>
+    );
+  }
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -116,6 +133,21 @@ export function SearchDialog({
               autoFocus
               value={query}
               onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowDown") {
+                  event.preventDefault();
+                  setActiveIndex((i) => Math.min(i + 1, items.length - 1));
+                } else if (event.key === "ArrowUp") {
+                  event.preventDefault();
+                  setActiveIndex((i) => Math.max(i - 1, 0));
+                } else if (event.key === "Enter" && items[activeIndex]) {
+                  event.preventDefault();
+                  const item = items[activeIndex];
+                  if (item.external) window.open(item.href, "_blank", "noopener,noreferrer");
+                  else window.location.href = item.href;
+                  setOpen(false);
+                }
+              }}
               placeholder="搜索站点、工具、资讯…"
               className="border-transparent rounded-none shadow-none px-2"
             />
@@ -129,20 +161,21 @@ export function SearchDialog({
               <ul className="space-y-1">
                 {items.map((item, index) => {
                   const Icon = item.kind === "site" ? Globe2 : FileText;
+                  const active = index === activeIndex;
                   const content = (
                     <>
-                      <span className="index-num w-5 shrink-0">
+                      <span className={`index-num w-5 shrink-0 ${active ? "text-primary" : ""}`}>
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="flex size-7 shrink-0 items-center justify-center border text-muted-foreground">
+                      <span className={`flex size-7 shrink-0 items-center justify-center border ${active ? "border-primary text-primary" : "text-muted-foreground"}`}>
                         <Icon className="size-3.5" />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-medium">
-                          {item.title}
+                          {highlight(item.title)}
                         </span>
                         <span className="block truncate text-xs text-muted-foreground">
-                          {item.description}
+                          {highlight(item.description)}
                         </span>
                       </span>
                       {item.external && (
@@ -150,10 +183,16 @@ export function SearchDialog({
                       )}
                     </>
                   );
-                  const className =
-                    "flex items-center gap-3 px-2.5 py-2 text-left transition-colors hover:bg-accent/60 group";
+                  const className = `flex items-center gap-3 px-2.5 py-2 text-left transition-colors group ${
+                    active ? "bg-accent/80" : "hover:bg-accent/40"
+                  }`;
                   return (
-                    <li key={`${item.kind}-${item.href}`}>
+                    <li
+                      key={`${item.kind}-${item.href}`}
+                      className="animate-row-in"
+                      style={{ animationDelay: `${Math.min(index * 24, 240)}ms` }}
+                      onMouseEnter={() => setActiveIndex(index)}
+                    >
                       {item.external ? (
                         <a
                           href={item.href}
