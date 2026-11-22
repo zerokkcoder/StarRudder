@@ -21,8 +21,14 @@ export function RandomDock({ sites }: { sites: Pick[] }) {
 
       const go = () => {
         const url = `/go/${next.slug}`;
-        const win = fromGesture ? window.open(url, "_blank", "noopener,noreferrer") : null;
-        if (!win) window.location.href = url;
+        // 带 noopener 时 window.open 在部分浏览器返回 null，会被误判为拦截并导致当前页跳转
+        const win = window.open(url, "_blank");
+        if (win) {
+          win.opener = null;
+        } else if (!fromGesture) {
+          // 非用户手势触发且弹窗被拦截时，才退回当前页打开
+          window.location.href = url;
+        }
         setPick(null);
       };
 
@@ -57,7 +63,7 @@ export function RandomDock({ sites }: { sites: Pick[] }) {
       <button
         type="button"
         onClick={() => launch(true)}
-        className="fixed right-5 bottom-5 z-50 flex items-center gap-2 border bg-background px-3 py-2.5 text-xs shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary lg:right-8 lg:bottom-8"
+        className="fixed right-5 bottom-[88px] z-50 flex items-center gap-2 border bg-background px-3 py-2.5 text-xs shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary lg:right-8 lg:bottom-[88px]"
         style={{ borderColor: "var(--border)" }}
         aria-label="随机发现一个站点"
       >
