@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SubmitForm } from "@/components/submit-form";
+import { getSiteCategories } from "@/lib/queries";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
@@ -8,14 +9,24 @@ export const metadata: Metadata = createMetadata({
   path: "/submit",
 });
 
-export default function SubmitPage() {
+export default async function SubmitPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const { type } = await searchParams;
+  const categories = await getSiteCategories();
+
   return (
     <div className="container py-7 sm:py-9">
       <header className="border-b pb-3" style={{ borderColor: "var(--border)" }}>
         <h1 className="text-xl font-semibold tracking-tight">提交站点</h1>
         <p className="mt-1 text-xs text-muted-foreground">发现值得分享的好站？提交坐标，人工核对后收录。</p>
       </header>
-      <SubmitForm />
+      <SubmitForm
+        defaultType={type === "link" ? "link" : "site"}
+        categories={categories.map(({ id, name }) => ({ id, name }))}
+      />
     </div>
   );
 }

@@ -9,16 +9,31 @@ const initialState: SubmitState = { ok: false, message: "" };
 const fieldClass =
   "h-9 w-full rounded-none border bg-transparent px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary";
 
-export function SubmitForm() {
+export function SubmitForm({
+  defaultType = "site",
+  categories = [],
+}: {
+  defaultType?: "site" | "link";
+  categories?: { id: number; name: string }[];
+}) {
   const [state, formAction, pending] = useActionState(submitLink, initialState);
 
   return (
     <form action={formAction} className="mt-7 max-w-xl space-y-5">
       <div>
         <label htmlFor="type" className="index-num mb-2 block">提交类型</label>
-        <select id="type" name="type" defaultValue="site" className={fieldClass} style={{ borderColor: "var(--border)" }}>
+        <select id="type" name="type" defaultValue={defaultType} className={fieldClass} style={{ borderColor: "var(--border)" }}>
           <option value="site">站点导航</option>
           <option value="link">友情链接</option>
+        </select>
+      </div>
+      <div>
+        <label htmlFor="categoryId" className="index-num mb-2 block">所属分类</label>
+        <select id="categoryId" name="categoryId" className={fieldClass} style={{ borderColor: "var(--border)" }}>
+          <option value="">待分类（由管理员指定）</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>{category.name}</option>
+          ))}
         </select>
       </div>
       <div>

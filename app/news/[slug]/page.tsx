@@ -18,7 +18,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug);
   const article = await getArticleBySlug(slug);
   if (!article) return createMetadata({ title: "条目未找到", path: `/news/${slug}` });
   return createMetadata({
@@ -41,7 +42,8 @@ export default async function ArticlePage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug);
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 

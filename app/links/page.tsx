@@ -35,7 +35,7 @@ export default async function LinksPage() {
 
       <div className="flex flex-wrap items-center gap-3 border-t py-5" style={{ borderColor: "var(--border)" }}>
         <p className="flex-1 text-xs text-muted-foreground">想让你的站点出现在这里？</p>
-        <Link href="/submit" className="flex items-center gap-1 index-num transition-colors hover:text-primary">
+        <Link href="/submit?type=link" className="flex items-center gap-1 index-num transition-colors hover:text-primary">
           提交友链申请 <ArrowRight className="size-3" />
         </Link>
       </div>

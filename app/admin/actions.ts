@@ -37,11 +37,17 @@ export async function approveSubmission(formData: FormData) {
     });
     revalidatePath("/links");
   } else {
-    const [category] = await db
-      .select()
-      .from(schema.categories)
-      .where(eq(schema.categories.type, "site"))
-      .limit(1);
+    const [category] = submission.categoryId
+      ? await db
+          .select()
+          .from(schema.categories)
+          .where(eq(schema.categories.id, submission.categoryId))
+          .limit(1)
+      : await db
+          .select()
+          .from(schema.categories)
+          .where(eq(schema.categories.type, "site"))
+          .limit(1);
     await db.insert(schema.sites).values({
       name: submission.name,
       slug: slugify(submission.name),

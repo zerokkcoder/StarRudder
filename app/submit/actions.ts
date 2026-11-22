@@ -14,6 +14,8 @@ export async function submitLink(
   const url = String(formData.get("url") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
+  const categoryRaw = String(formData.get("categoryId") ?? "").trim();
+  const categoryId = /^\d+$/.test(categoryRaw) ? Number(categoryRaw) : null;
 
   if (!name || !url || !["site", "link"].includes(type)) {
     return { ok: false, message: "请填写名称、网址与提交类型。" };
@@ -31,6 +33,7 @@ export async function submitLink(
     url,
     description,
     email: email || null,
+    categoryId,
   });
 
   return { ok: true, message: "提交成功！我们会在审核后收录。" };

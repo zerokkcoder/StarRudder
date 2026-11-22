@@ -198,5 +198,9 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - 后台左侧菜单统一为 3–4 字；后台首页移除「管理入口」区块；弹窗表单内容与按钮增加内边距
 - 新增后台 `/admin/seo` 状态页与 `docs/SEO.md`（SEO 验收清单 + Google Trends 每周持续改进流程）
 - 资讯详情页补充 `BreadcrumbList` JSON-LD
+- 修复资讯详情 404：Next 传入的 `params.slug` 是 percent-encoded 字符串，页面内先 `decodeURIComponent` 再查库
+- 站内检索触发器加 `whitespace-nowrap`，「站内检索」保持单行
+- 提交表单新增「所属分类」（写入 `submissions.categoryId`，审核收录时带入站点）；从友链页进入自动预选「友情链接」
+- 前台内容区改为 flex 列布局，`main` 自适应，页脚在内容少时仍贴底、高度一致
 
 > 剩余事项需在用户的线上服务器执行：MySQL 建库、迁移、上传产物、Nginx/HTTPS、PM2 启动、Google 验证。

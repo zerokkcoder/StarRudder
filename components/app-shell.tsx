@@ -26,8 +26,8 @@ export function AppShell({
   return (
     <>
       {!isBackend && <SiteChrome searchData={searchData} />}
-      <div className={isBackend ? "" : "lg:pl-[152px]"}>
-        <main className={isBackend ? "" : "min-h-[70vh]"}>{children}</main>
+      <div className={isBackend ? "" : "flex min-h-screen flex-col lg:pl-[152px]"}>
+        <main className={isBackend ? "" : "flex-1"}>{children}</main>
         {!isBackend && <SiteFooter />}
       </div>
       {!isBackend && <RandomDock sites={randomSites} />}

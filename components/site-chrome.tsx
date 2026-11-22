@@ -98,12 +98,12 @@ export function SiteChrome({ searchData }: { searchData: SearchData }) {
         <div className="mt-auto space-y-3">
           <SearchDialog
             {...searchData}
-            triggerClassName="flex w-full items-center gap-2 border px-3 py-2 text-left text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            triggerClassName="flex w-full items-center gap-1.5 border px-2 py-2 text-left text-[11px] text-muted-foreground whitespace-nowrap transition-colors hover:border-primary hover:text-primary"
             trigger={
               <>
-                <Search className="size-3.5" />
-                <span className="flex-1">站内检索</span>
-                <span className="index-num">⌘K</span>
+                <Search className="size-3.5 shrink-0" />
+                <span className="flex-1 whitespace-nowrap">站内检索</span>
+                <span className="index-num shrink-0">⌘K</span>
               </>
             }
           />

@@ -113,6 +113,9 @@ export const submissions = mysqlTable("submissions", {
   url: text("url").notNull(),
   description: varchar("description", { length: 1000 }).notNull().default(""),
   email: varchar("email", { length: 255 }),
+  categoryId: int("category_id").references(() => categories.id, {
+    onDelete: "set null",
+  }),
   status: varchar("status", { length: 20 }).notNull().default("pending"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
