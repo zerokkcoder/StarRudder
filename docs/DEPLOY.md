@@ -36,18 +36,21 @@ NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=你的Google验证码
 ```
 
 > `NEXT_PUBLIC_*` 会在构建时写入客户端包，修改后必须**重新构建**。
+> standalone 产物不会自动读取 `.env.local`；`ecosystem.config.js` 已加 `node_args: "--env-file=.env.local"`，请确保该文件与 `server.js` 同目录。
 
 ---
 
 ## 3. 构建与部署
 
-本地或 CI 构建：
+本地或 CI 构建（**先准备生产 `.env.local`**，因为 `NEXT_PUBLIC_SITE_URL` 会写进构建产物）：
 
 ```bash
 pnpm install
 pnpm typecheck
 pnpm build
 ```
+
+构建前确认 `.env.local` 中 `NEXT_PUBLIC_SITE_URL=https://starrudder.cc`，否则 canonical / sitemap 会指向错误域名。
 
 `next.config.ts` 已开启 `output: "standalone"`，产物在 `.next/standalone`。
 
@@ -88,7 +91,7 @@ pm2 startup
 
 ## 4. 数据库迁移
 
-迁移 SQL 已生成在 `drizzle/`。首次部署任选一种方式：
+迁移 SQL 已生成在 `drizzle/`（当前 3 个迁移：建表、提交分类字段、作者字段）。首次部署任选一种方式：
 
 **方式 A（推荐，本地执行，连线上库）：**
 ```bash
@@ -99,7 +102,8 @@ pnpm db:seed   # 仅首次需要，会清空并重建数据
 
 **方式 B（服务器执行）：** 在服务器安装完整依赖后运行 `pnpm db:migrate`。
 
-> 若线上库里已有数据，不要执行 `db:seed`（它会清空表）。
+> 若线上库里已有数据，不要执行 `db:seed`（它会清空表并重建站点/文章/订阅源）。
+> 订阅源配置已写进 `db/seed.ts`（7 个中文源，按编程开发 / AI 进展 / 游戏开发 / 产品设计分类）；若选择不 seed，需在后台 `/admin/rss-sources` 手动添加，否则 RSS 定时任务取不到内容。
 
 ---
 
@@ -145,7 +149,7 @@ crontab -e
 ## 7. SEO 上线检查
 
 - [ ] `https://starrudder.cc/robots.txt` 返回正确 sitemap 地址
-- [ ] `https://starrudder.cc/sitemap.xml` 包含全部页面（含 27+ 资讯详情）
+- [ ] `https://starrudder.cc/sitemap.xml` 包含全部页面（含全部内容详情页）
 - [ ] 首页标题、描述、canonical 均为 starrudder.cc
 - [ ] Google Search Console 添加资源，验证 meta 或上传验证文件
 - [ ] 提交 sitemap；检查「网址前缀」与 canonical 一致
