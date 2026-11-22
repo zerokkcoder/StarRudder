@@ -4,13 +4,15 @@ import { logout } from "@/app/admin/actions";
 import { getSession } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { CompassMark } from "@/components/compass-mark";
+import { AdminThemeToggle } from "@/components/admin/admin-theme-toggle";
 
 const menu = [
   { href: "/admin", label: "后台首页" },
   { href: "/admin/seo", label: "搜索引擎" },
   { href: "/admin/sites", label: "站点管理" },
   { href: "/admin/categories", label: "分类管理" },
-  { href: "/admin/articles", label: "资讯管理" },
+  { href: "/admin/articles", label: "内容管理" },
+  { href: "/admin/articles/import", label: "链接导入" },
   { href: "/admin/rss-sources", label: "订阅源" },
   { href: "/admin/friend-links", label: "友情链接" },
   { href: "/admin/submissions", label: "提交审核" },
@@ -25,7 +27,7 @@ export default async function AdminLayout({
   if (!session) redirect("/admin/login");
 
   return (
-    <div className="min-h-screen">
+    <div id="admin-root" data-theme="dark" className="min-h-screen bg-background text-foreground">
       <aside className="fixed inset-y-0 left-0 z-40 flex w-[152px] flex-col border-r px-4 py-5" style={{ borderColor: "var(--border)" }}>
         <Link href="/admin" className="flex items-center gap-2">
           <CompassMark className="size-6 text-primary" />
@@ -48,7 +50,10 @@ export default async function AdminLayout({
         </nav>
 
         <div className="mt-auto space-y-3 border-t pt-3" style={{ borderColor: "var(--border)" }}>
-          <Link href="/" className="block index-num hover:text-primary">返回站点 ↗</Link>
+          <div className="flex items-center justify-between">
+            <Link href="/" className="index-num hover:text-primary">返回站点 ↗</Link>
+            <AdminThemeToggle />
+          </div>
           <form action={logout}>
             <Button type="submit" variant="ghost" size="xs" className="h-auto p-0 index-num hover:text-primary">
               退出登录

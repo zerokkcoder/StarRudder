@@ -50,17 +50,17 @@ export default async function HomePage() {
         <p className="text-xs text-muted-foreground">发现值得停泊的好站</p>
         <div className="ml-auto flex items-center gap-4 index-num">
           <span>已收录 {String(allSites.length).padStart(2, "0")}</span>
-          <span>资讯 {String(articles.length).padStart(2, "0")}</span>
+          <span>内容 {String(articles.length).padStart(2, "0")}</span>
           <Link href="/sites" className="flex items-center gap-1 transition-colors hover:text-primary">
             全部站点 <ArrowRight className="size-3" />
           </Link>
         </div>
       </header>
 
-      {/* 首屏即见：最新资讯 */}
+      {/* 首屏即见：最新内容 */}
       <section className="pt-5" aria-labelledby="latest-news">
         <div className="flex items-baseline justify-between border-b pb-2" style={{ borderColor: "var(--border)" }}>
-          <h1 id="latest-news" className="text-lg font-semibold tracking-tight">最新资讯</h1>
+          <h1 id="latest-news" className="text-lg font-semibold tracking-tight">最新内容</h1>
           <Link href="/news" className="index-num flex items-center gap-1 transition-colors hover:text-primary">
             查看全部 <ArrowRight className="size-3" />
           </Link>
@@ -78,7 +78,9 @@ export default async function HomePage() {
                 <span className="min-w-0 flex-1 truncate text-[13px] transition-colors group-hover:text-primary">
                   {article.title}
                 </span>
-                {article.source === "rss" && <span className="index-num shrink-0">聚合</span>}
+                {article.source !== "manual" && (
+                  <span className="index-num shrink-0">{article.source === "link" ? "导入" : "聚合"}</span>
+                )}
                 <ArrowRight className="size-3.5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
               </Link>
             </li>

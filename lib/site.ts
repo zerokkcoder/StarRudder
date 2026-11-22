@@ -20,7 +20,7 @@ export const siteConfig = {
   nav: [
     { label: "首页", href: "/" },
     { label: "站点", href: "/sites" },
-    { label: "资讯", href: "/news" },
+    { label: "内容", href: "/news" },
     { label: "友链", href: "/links" },
   ],
 } as const;

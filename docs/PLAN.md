@@ -202,5 +202,9 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - 站内检索触发器加 `whitespace-nowrap`，「站内检索」保持单行
 - 提交表单新增「所属分类」（写入 `submissions.categoryId`，审核收录时带入站点）；从友链页进入自动预选「友情链接」
 - 前台内容区改为 flex 列布局，`main` 自适应，页脚在内容少时仍贴底、高度一致
+- 默认深色主题（`<html class="dark">`，用户保存过浅色时自动切回）
+- 后台增加**独立主题开关**（`star-rudder-admin-theme`，作用于 `#admin-root` 的 `data-theme`，不影响前台）
+- 内容模块重构：新增「链接导入」——粘贴长文链接 / GitHub 仓库链接，自动抓取标题、摘要与正文（GitHub 走 API + README），可在后台核对编辑后入库（`source=link`）；RSS 订阅源保留为可选补充
+- 用户可见文案「资讯」改为「内容」（路由 `/news` 保持不变，避免影响 SEO）
 
 > 剩余事项需在用户的线上服务器执行：MySQL 建库、迁移、上传产物、Nginx/HTTPS、PM2 启动、Google 验证。

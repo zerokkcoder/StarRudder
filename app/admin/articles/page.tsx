@@ -6,7 +6,7 @@ import { PAGE_SIZE, pageCount, Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import { db, schema } from "@/db";
 
-export const metadata: Metadata = { title: "资讯管理", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "内容管理", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 const shortDate = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -26,10 +26,10 @@ export default async function AdminArticlesPage({
     <div className="container py-7">
       <header className="flex items-end justify-between gap-4 border-b pb-3" style={{ borderColor: "var(--border)" }}>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">资讯管理</h1>
-          <p className="mt-1 text-xs text-muted-foreground">共 {articles.length} 条资讯</p>
+          <h1 className="text-xl font-semibold tracking-tight">内容管理</h1>
+          <p className="mt-1 text-xs text-muted-foreground">共 {articles.length} 条内容</p>
         </div>
-        <Link href="/admin/articles/new" className="index-num hover:text-primary">＋ 新建资讯</Link>
+        <Link href="/admin/articles/new" className="index-num hover:text-primary">＋ 新建内容</Link>
       </header>
 
       <ul className="border-b" style={{ borderColor: "var(--border)" }}>
@@ -37,7 +37,9 @@ export default async function AdminArticlesPage({
           <li key={article.id} className="flex items-center gap-3 border-b py-2 last:border-b-0" style={{ borderColor: "var(--border)" }}>
             <span className="index-num w-6">{String(article.id).padStart(2, "0")}</span>
             <span className="min-w-0 flex-1 truncate text-xs">{article.title}</span>
-            <span className="index-num shrink-0">{article.source === "rss" ? "聚合" : "原创"}</span>
+            <span className="index-num shrink-0">
+              {article.source === "rss" ? "聚合" : article.source === "link" ? "导入" : "原创"}
+            </span>
             <span className="index-num shrink-0">{shortDate.format(article.publishedAt)}</span>
             <form action={deleteArticle}>
               <input type="hidden" name="id" value={article.id} />

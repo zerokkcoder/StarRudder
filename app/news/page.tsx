@@ -13,8 +13,8 @@ export async function generateMetadata({
   const { page } = await searchParams;
   const n = Number(page) || 1;
   return createMetadata({
-    title: n > 1 ? `最新资讯 · 第 ${n} 页` : "最新资讯",
-    description: "星舵资讯：科技趋势、AI 动态与精选好文，原创与聚合内容并存。",
+    title: n > 1 ? `内容列表 · 第 ${n} 页` : "内容列表",
+    description: "星舵内容库：科技趋势、AI 动态、开源项目与精选好文，支持原创与链接导入。",
     path: n > 1 ? `/news?page=${n}` : "/news",
   });
 }
@@ -39,7 +39,7 @@ export default async function NewsPage({
   return (
     <div className="container py-7 sm:py-9">
       <header className="border-b pb-3" style={{ borderColor: "var(--border)" }}>
-        <h1 className="text-xl font-semibold tracking-tight">最新资讯</h1>
+        <h1 className="text-xl font-semibold tracking-tight">内容列表</h1>
         <p className="mt-1 text-xs text-muted-foreground">共 {all.length} 条 · 原创为全文，聚合内容仅保留摘要。</p>
       </header>
 
@@ -56,7 +56,9 @@ export default async function NewsPage({
               <span className="min-w-0 flex-1 truncate text-[13px] transition-colors group-hover:text-primary">
                 {article.title}
               </span>
-              {article.source === "rss" && <span className="index-num shrink-0">聚合</span>}
+              {article.source !== "manual" && (
+                <span className="index-num shrink-0">{article.source === "link" ? "导入" : "聚合"}</span>
+              )}
               <ArrowRight className="size-3.5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
             </Link>
           </li>

@@ -87,7 +87,8 @@
   }
 }
 
-:root {
+:root,
+[data-theme="light"] {
   --radius: 0.25rem;
 
   --background: #fafaf9;
@@ -141,7 +142,8 @@
   --code-highlight: #f1f1ee;
 }
 
-.dark {
+.dark,
+[data-theme="dark"] {
   --background: #141414;
   --foreground: #ededeb;
   --card: #1b1b1b;
