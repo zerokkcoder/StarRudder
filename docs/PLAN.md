@@ -12,8 +12,8 @@
 | 语言 / SEO | 中文内容，`lang="zh-CN"`，面向全球主做 Google SEO，URL 用 ASCII slug |
 | 技术栈 | Next.js 16 App Router + TypeScript + Tailwind v4 |
 | UI | coss ui（Cal.com 设计系统，Base UI + Tailwind v4，复制源码模式） |
-| 数据库 | 本地 PostgreSQL（非 Docker），数据库名 `star_rudder` |
-| ORM | Drizzle ORM + drizzle-kit + postgres.js |
+| 数据库 | MySQL 8（schema 兼容 5.7），本地数据库名/用户/密码均为 `star_rudder` |
+| ORM | Drizzle ORM + drizzle-kit + mysql2 |
 | 资讯来源 | RSS/API 聚合 + 后台手动发布（双来源，用 `source` 字段区分） |
 | 后台 | 完整后台（Auth.js 鉴权 + 各实体 CRUD + 仪表盘） |
 | 视觉风格 | 极简留白：暖白底 + 墨黑字 + 单一「星舵蓝」点缀色，无渐变、无花哨装饰 |
@@ -172,6 +172,13 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - [x] 提交审核：`/admin/submissions`（收录/忽略）
 - [x] JWT 会话鉴权、统一后台导航与退出登录；后台页面均 noindex
 
+### 数据库切换 MySQL（已完成）
+
+- 从 PostgreSQL 迁移到 MySQL 8（本地 5.7 亦兼容）：`mysql2` + drizzle mysql-core，迁移文件重新生成
+- schema 避免使用 MySQL 5.7 不支持的 TEXT 默认值与 `(now())` 表达式默认，唯一索引长度控制在 1000 字节内
+- 迁移 + seed 已在本地 MySQL 实测通过；页面与后台 HTTP 验证正常
+- 数据库/表字符集需为 utf8mb4且连接显式执行 `SET NAMES utf8mb4`（本地 5.7 默认 utf8mb3 无法存 emoji）；RSS 摘要同时过滤 4 字节字符作为兜底
+
 ### M5 部署准备（已完成，待服务器上执行）
 
 - [x] 域名已购买：`starrudder.cc`；`NEXT_PUBLIC_SITE_URL`、canonical、sitemap、robots、OG 全部切换
@@ -179,6 +186,9 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - [x] `next.config.ts` 开启 `output: "standalone"`（构建产物 `.next/standalone/server.js` 已验证）
 - [x] 部署指南 `docs/DEPLOY.md`：线上 PostgreSQL 建库、环境变量、standalone 上传、PM2、Nginx + HTTPS、RSS cron、SEO 上线清单
 - [x] `ecosystem.config.js`（PM2）
-- [x] 后台页面去掉左侧导航；左侧导航文案改为 2 字（首页/站点/资讯/友链）
+- [x] 后台页面去掉前端左侧导航，改为**后台专属左侧菜单**；前端左侧导航文案改为 2 字（首页/站点/资讯/友链）
+- [x] 侧栏 152px；内容区居中、最大宽 1200px（修正宽屏右侧留白过大的问题）
+- [x] 后台新增/编辑表单改为弹窗（站点、分类、订阅源、友链），列表页不再直接展示表单
+- [x] 列表分页：公共资讯、站点目录，后台站点/分类/资讯/订阅源/友链/审核，统一 12 条/页，中文「上一页/下一页/第 X / Y 页」
 
-> 剩余事项需在用户的线上服务器执行：建库、迁移、上传产物、Nginx/HTTPS、PM2 启动、Google 验证。
+> 剩余事项需在用户的线上服务器执行：MySQL 建库、迁移、上传产物、Nginx/HTTPS、PM2 启动、Google 验证。

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { PAGE_SIZE, pageCount, Pagination } from "@/components/pagination";
 import { SiteLedger } from "@/components/site-ledger";
 import { getAllSites, getSiteCategories, getSitesByCategory } from "@/lib/queries";
 import { createMetadata } from "@/lib/seo";
@@ -14,11 +15,14 @@ export const metadata: Metadata = createMetadata({
 export default async function SitesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; q?: string }>;
+  searchParams: Promise<{ category?: string; q?: string; page?: string }>;
 }) {
-  const { category = "all", q = "" } = await searchParams;
+  const { category = "all", q = "", page: rawPage } = await searchParams;
   const [allSites, categories] = await Promise.all([getAllSites(), getSiteCategories()]);
-  const sites = await getSitesByCategory(category, q);
+  const filtered = await getSitesByCategory(category, q);
+  const totalPages = pageCount(filtered.length, PAGE_SIZE);
+  const page = Math.min(Math.max(Number(rawPage) || 1, 1), totalPages);
+  const sites = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const countFor = (slug: string) =>
     slug === "all"
@@ -71,6 +75,12 @@ export default async function SitesPage({
           <span className="index-num">共 {sites.length} 条</span>
         </div>
         <SiteLedger sites={sites} />
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          basePath="/sites"
+          params={{ category, q }}
+        />
       </section>
 
       <div className="flex flex-wrap items-center gap-3 border-t py-5" style={{ borderColor: "var(--border)" }}>

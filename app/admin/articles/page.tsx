@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { desc } from "drizzle-orm";
 import { deleteArticle } from "@/app/admin/crud";
+import { PAGE_SIZE, pageCount, Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import { db, schema } from "@/db";
 
@@ -10,8 +11,16 @@ export const dynamic = "force-dynamic";
 
 const shortDate = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
 
-export default async function AdminArticlesPage() {
+export default async function AdminArticlesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: raw } = await searchParams;
   const articles = await db.select().from(schema.articles).orderBy(desc(schema.articles.publishedAt));
+  const totalPages = pageCount(articles.length, PAGE_SIZE);
+  const page = Math.min(Math.max(Number(raw) || 1, 1), totalPages);
+  const paged = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="container py-7">
@@ -24,7 +33,7 @@ export default async function AdminArticlesPage() {
       </header>
 
       <ul className="border-b" style={{ borderColor: "var(--border)" }}>
-        {articles.slice(0, 60).map((article) => (
+        {paged.map((article) => (
           <li key={article.id} className="flex items-center gap-3 border-b py-2 last:border-b-0" style={{ borderColor: "var(--border)" }}>
             <span className="index-num w-6">{String(article.id).padStart(2, "0")}</span>
             <span className="min-w-0 flex-1 truncate text-xs">{article.title}</span>
@@ -37,6 +46,7 @@ export default async function AdminArticlesPage() {
           </li>
         ))}
       </ul>
+      <Pagination page={page} totalPages={totalPages} basePath="/admin/articles" />
     </div>
   );
 }

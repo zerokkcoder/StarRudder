@@ -26,7 +26,7 @@ export function AppShell({
   return (
     <>
       {!isBackend && <SiteChrome searchData={searchData} />}
-      <div className={isBackend ? "" : "lg:pl-[176px]"}>
+      <div className={isBackend ? "" : "lg:pl-[152px]"}>
         <main className={isBackend ? "" : "min-h-[70vh]"}>{children}</main>
         {!isBackend && <SiteFooter />}
       </div>

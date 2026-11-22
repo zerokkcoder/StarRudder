@@ -15,6 +15,8 @@ function stripHtml(input: string) {
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/\s+/g, " ")
+    // 移除 4 字节字符（emoji），兼容 utf8mb3 表
+    .replace(/[\u{10000}-\u{10FFFF}]/gu, "")
     .trim();
 }
 
@@ -47,7 +49,7 @@ export async function fetchRssFeeds(): Promise<RssFetchResult> {
       const feed = await parser.parseURL(source.url);
       for (const item of feed.items.slice(0, 12)) {
         const link = item.link ?? item.guid;
-        const title = item.title?.trim();
+        const title = item.title?.replace(/[\u{10000}-\u{10FFFF}]/gu, "").trim();
         if (!link || !title) continue;
 
         const exists = await db

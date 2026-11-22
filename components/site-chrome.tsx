@@ -64,10 +64,10 @@ export function SiteChrome({ searchData }: { searchData: SearchData }) {
   return (
     <>
       {/* 桌面：左侧固定导航轨道 */}
-      <div className="fixed left-0 top-0 z-50 hidden h-[2px] w-[176px] lg:block" style={{ background: "var(--muted)" }}>
+      <div className="fixed left-0 top-0 z-50 hidden h-[2px] w-[152px] lg:block" style={{ background: "var(--muted)" }}>
         <div className="h-full bg-primary transition-[width] duration-150" style={{ width: `${progress}%` }} />
       </div>
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[176px] flex-col border-r px-4 py-5 lg:flex" style={{ borderColor: "var(--border)" }}>
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[152px] flex-col border-r px-4 py-5 lg:flex" style={{ borderColor: "var(--border)" }}>
         <Link href="/" className="flex items-center gap-2.5" aria-label="星舵首页">
           <span className="text-primary">
             <CompassMark className="size-8" />

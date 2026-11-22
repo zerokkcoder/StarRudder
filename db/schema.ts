@@ -2,56 +2,51 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
-  integer,
-  jsonb,
-  pgTable,
-  serial,
+  int,
+  json,
+  mysqlTable,
   text,
   timestamp,
   varchar,
-} from "drizzle-orm/pg-core";
+} from "drizzle-orm/mysql-core";
 
 /** 后台管理员 */
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
+export const users = mysqlTable("users", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 200 }).notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   name: varchar("name", { length: 100 }).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
-/** 分类：站点与资讯共用，type 区分 */
-export const categories = pgTable("categories", {
-  id: serial("id").primaryKey(),
+/** 分类：站点与资讯共用 */
+export const categories = mysqlTable("categories", {
+  id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
   icon: varchar("icon", { length: 100 }),
-  type: varchar("type", { length: 20 }).notNull().default("site"), // site | news
-  sort: integer("sort").notNull().default(0),
+  type: varchar("type", { length: 20 }).notNull().default("site"),
+  sort: int("sort").notNull().default(0),
 });
 
 /** 站点导航 */
-export const sites = pgTable(
+export const sites = mysqlTable(
   "sites",
   {
-    id: serial("id").primaryKey(),
+    id: int("id").autoincrement().primaryKey(),
     name: varchar("name", { length: 150 }).notNull(),
     slug: varchar("slug", { length: 150 }).notNull().unique(),
     url: text("url").notNull(),
-    description: text("description").notNull().default(""),
+    description: varchar("description", { length: 1000 }).notNull().default(""),
     logo: text("logo"),
-    categoryId: integer("category_id").references(() => categories.id, {
+    categoryId: int("category_id").references(() => categories.id, {
       onDelete: "set null",
     }),
-    tags: jsonb("tags").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
-    clicks: integer("clicks").notNull().default(0),
-    status: varchar("status", { length: 20 }).notNull().default("active"), // active | hidden
+    tags: json("tags").$type<string[]>().notNull(),
+    clicks: int("clicks").notNull().default(0),
+    status: varchar("status", { length: 20 }).notNull().default("active"),
     featured: boolean("featured").notNull().default(false),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
   },
   (table) => [
     index("sites_category_idx").on(table.categoryId),
@@ -59,29 +54,25 @@ export const sites = pgTable(
   ],
 );
 
-/** 资讯：manual=后台原创全文，rss=聚合摘要+原文链接 */
-export const articles = pgTable(
+/** 资讯：manual=原创全文，rss=聚合摘要+原文链接 */
+export const articles = mysqlTable(
   "articles",
   {
-    id: serial("id").primaryKey(),
+    id: int("id").autoincrement().primaryKey(),
     title: varchar("title", { length: 255 }).notNull(),
-    slug: varchar("slug", { length: 255 }).notNull().unique(),
-    summary: text("summary").notNull().default(""),
-    content: text("content").notNull().default(""),
+    slug: varchar("slug", { length: 200 }).notNull().unique(),
+    summary: text("summary").notNull(),
+    content: text("content").notNull(),
     cover: text("cover"),
-    categoryId: integer("category_id").references(() => categories.id, {
+    categoryId: int("category_id").references(() => categories.id, {
       onDelete: "set null",
     }),
-    tags: jsonb("tags").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
-    source: varchar("source", { length: 20 }).notNull().default("manual"), // manual | rss
+    tags: json("tags").$type<string[]>().notNull(),
+    source: varchar("source", { length: 20 }).notNull().default("manual"),
     sourceUrl: text("source_url"),
-    publishedAt: timestamp("published_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    status: varchar("status", { length: 20 }).notNull().default("published"), // published | draft
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    publishedAt: timestamp("published_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+    status: varchar("status", { length: 20 }).notNull().default("published"),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
   },
   (table) => [
     index("articles_published_idx").on(table.publishedAt),
@@ -91,43 +82,39 @@ export const articles = pgTable(
 );
 
 /** RSS 订阅源 */
-export const rssSources = pgTable("rss_sources", {
-  id: serial("id").primaryKey(),
+export const rssSources = mysqlTable("rss_sources", {
+  id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 150 }).notNull(),
-  url: text("url").notNull().unique(),
-  categoryId: integer("category_id").references(() => categories.id, {
+  url: varchar("url", { length: 250 }).notNull().unique(),
+  categoryId: int("category_id").references(() => categories.id, {
     onDelete: "set null",
   }),
-  lastFetchedAt: timestamp("last_fetched_at", { withTimezone: true }),
+  lastFetchedAt: timestamp("last_fetched_at"),
   status: varchar("status", { length: 20 }).notNull().default("active"),
 });
 
 /** 友情链接 */
-export const friendLinks = pgTable("friend_links", {
-  id: serial("id").primaryKey(),
+export const friendLinks = mysqlTable("friend_links", {
+  id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 150 }).notNull(),
   url: text("url").notNull(),
   logo: text("logo"),
-  description: text("description").notNull().default(""),
+  description: varchar("description", { length: 1000 }).notNull().default(""),
   status: varchar("status", { length: 20 }).notNull().default("active"),
-  sort: integer("sort").notNull().default(0),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
+  sort: int("sort").notNull().default(0),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
-/** 用户提交（站点/友链申请） */
-export const submissions = pgTable("submissions", {
-  id: serial("id").primaryKey(),
-  type: varchar("type", { length: 20 }).notNull(), // site | link
+/** 用户提交 */
+export const submissions = mysqlTable("submissions", {
+  id: int("id").autoincrement().primaryKey(),
+  type: varchar("type", { length: 20 }).notNull(),
   name: varchar("name", { length: 150 }).notNull(),
   url: text("url").notNull(),
-  description: text("description").notNull().default(""),
+  description: varchar("description", { length: 1000 }).notNull().default(""),
   email: varchar("email", { length: 255 }),
-  status: varchar("status", { length: 20 }).notNull().default("pending"), // pending | approved | rejected
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
+  status: varchar("status", { length: 20 }).notNull().default("pending"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
 export type Site = typeof sites.$inferSelect;

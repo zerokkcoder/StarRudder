@@ -13,16 +13,18 @@
 
 - Next.js 16（App Router）+ TypeScript
 - Tailwind CSS v4 + [coss ui](https://coss.com/ui)（Cal.com 设计系统）
-- PostgreSQL + Drizzle ORM
+- MySQL 8（schema 同时兼容 5.7）+ Drizzle ORM
 - Auth.js 后台鉴权
 - Tiptap 富文本 / rss-parser 资讯聚合
 
 ## 本地开发
 
-前置条件：本地已运行 PostgreSQL，并创建数据库 `star_rudder`：
+前置条件：本地已运行 MySQL，数据库名 / 用户 / 密码均为 `star_rudder`：
 
 ```sql
 CREATE DATABASE star_rudder;
+CREATE USER 'star_rudder'@'localhost' IDENTIFIED BY 'star_rudder';
+GRANT ALL PRIVILEGES ON star_rudder.* TO 'star_rudder'@'localhost';
 ```
 
 ```bash
@@ -33,8 +35,7 @@ pnpm install
 cp .env.example .env.local
 # 编辑 .env.local 中的 DATABASE_URL / AUTH_SECRET
 
-# 3. 数据库迁移与种子数据（M1 完成后补齐命令）
-pnpm db:generate
+# 3. 数据库迁移与种子数据
 pnpm db:migrate
 pnpm db:seed
 

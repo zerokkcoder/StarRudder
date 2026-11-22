@@ -3,6 +3,17 @@ import { redirect } from "next/navigation";
 import { logout } from "@/app/admin/actions";
 import { getSession } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { CompassMark } from "@/components/compass-mark";
+
+const menu = [
+  { href: "/admin", label: "后台首页" },
+  { href: "/admin/sites", label: "站点" },
+  { href: "/admin/categories", label: "分类" },
+  { href: "/admin/articles", label: "资讯" },
+  { href: "/admin/rss-sources", label: "订阅源" },
+  { href: "/admin/friend-links", label: "友链" },
+  { href: "/admin/submissions", label: "审核" },
+];
 
 export default async function AdminLayout({
   children,
@@ -10,23 +21,42 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await getSession();
-  if (!session) redirect("/admin/login");
+  if (!session) redirect("/login");
+
   return (
-    <div className="admin-shell">
-      <nav className="container flex flex-wrap gap-x-4 gap-y-2 pt-5 index-num" aria-label="后台导航">
-        <Link href="/admin" className="hover:text-primary">后台首页</Link>
-        <Link href="/admin/sites" className="hover:text-primary">站点</Link>
-        <Link href="/admin/categories" className="hover:text-primary">分类</Link>
-        <Link href="/admin/articles" className="hover:text-primary">资讯</Link>
-        <Link href="/admin/rss-sources" className="hover:text-primary">订阅源</Link>
-        <Link href="/admin/friend-links" className="hover:text-primary">友链</Link>
-        <Link href="/admin/submissions" className="hover:text-primary">审核</Link>
-        <Link href="/" className="ml-auto hover:text-primary">返回站点 ↗</Link>
-        <form action={logout}>
-          <Button type="submit" variant="ghost" size="xs" className="h-auto p-0 index-num hover:text-primary">退出</Button>
-        </form>
-      </nav>
-      {children}
+    <div className="min-h-screen">
+      <aside className="fixed inset-y-0 left-0 z-40 flex w-[152px] flex-col border-r px-4 py-5" style={{ borderColor: "var(--border)" }}>
+        <Link href="/admin" className="flex items-center gap-2">
+          <CompassMark className="size-6 text-primary" />
+          <span>
+            <span className="block text-sm font-semibold">星舵</span>
+            <span className="index-num block">管理后台</span>
+          </span>
+        </Link>
+
+        <nav className="mt-8 flex flex-col gap-0.5" aria-label="后台导航">
+          {menu.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="border-l-2 border-transparent py-1.5 pl-2.5 text-[13px] text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="mt-auto space-y-3 border-t pt-3" style={{ borderColor: "var(--border)" }}>
+          <Link href="/" className="block index-num hover:text-primary">返回站点 ↗</Link>
+          <form action={logout}>
+            <Button type="submit" variant="ghost" size="xs" className="h-auto p-0 index-num hover:text-primary">
+              退出登录
+            </Button>
+          </form>
+        </div>
+      </aside>
+
+      <div className="ml-[152px] min-h-screen">{children}</div>
     </div>
   );
 }

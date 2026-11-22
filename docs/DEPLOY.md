@@ -1,24 +1,24 @@
 # 星舵 StarRudder · 上线部署指南
 
 > 生产地址：`https://starrudder.cc`
-> 方案：自有线上服务器 + 线上 PostgreSQL + Next.js standalone + PM2 + Nginx + HTTPS。
+> 方案：自有线上服务器 + 线上 MySQL 8 + Next.js standalone + PM2 + Nginx + HTTPS。
 
 ---
 
 ## 1. 服务器准备
 
 - Node.js ≥ 20.9（Next.js 16 最低要求）
-- PostgreSQL 14+
+- MySQL 8（schema 使用兼容写法，MySQL 5.7 也可运行）
 - Nginx
 - PM2：`npm i -g pm2`
 - HTTPS 证书：`certbot --nginx -d starrudder.cc -d www.starrudder.cc`
 
-创建数据库与专用用户（在 PostgreSQL 执行）：
+在运维面板创建数据库与用户（名称 / 用户 / 密码均为 `star_rudder` 或自定义）：
 
 ```sql
-CREATE USER starrudder WITH PASSWORD '请替换为强密码';
-CREATE DATABASE star_rudder OWNER starrudder;
-GRANT ALL PRIVILEGES ON DATABASE star_rudder TO starrudder;
+CREATE DATABASE star_rudder CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'star_rudder'@'localhost' IDENTIFIED BY '请替换为强密码';
+GRANT ALL PRIVILEGES ON star_rudder.* TO 'star_rudder'@'localhost';
 ```
 
 ---
@@ -28,7 +28,7 @@ GRANT ALL PRIVILEGES ON DATABASE star_rudder TO starrudder;
 在服务器创建 `/var/www/starrudder/.env.local`（standalone 运行时由 `server.js` 进程读取）：
 
 ```env
-DATABASE_URL=postgresql://starrudder:强密码@127.0.0.1:5432/star_rudder
+DATABASE_URL=mysql://star_rudder:强密码@127.0.0.1:3306/star_rudder?charset=utf8mb4
 AUTH_SECRET=至少32位的随机字符串
 CRON_SECRET=另一个随机字符串
 NEXT_PUBLIC_SITE_URL=https://starrudder.cc

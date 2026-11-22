@@ -88,6 +88,7 @@ export async function createCategory(formData: FormData) {
   });
   revalidatePath("/sites");
   revalidatePath("/admin/categories");
+  redirect("/admin/categories");
 }
 
 export async function deleteCategory(formData: FormData) {
@@ -120,6 +121,7 @@ export async function createRssSource(formData: FormData) {
     categoryId: idOf(formData.get("categoryId")),
   });
   revalidatePath("/admin/rss-sources");
+  redirect("/admin/rss-sources");
 }
 
 export async function deleteRssSource(formData: FormData) {
@@ -149,6 +151,7 @@ export async function createFriendLink(formData: FormData) {
   });
   revalidatePath("/links");
   revalidatePath("/");
+  redirect("/admin/friend-links");
 }
 
 export async function deleteFriendLink(formData: FormData) {

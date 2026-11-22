@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { desc } from "drizzle-orm";
 import { approveSubmission, logout, rejectSubmission } from "@/app/admin/actions";
+import { PAGE_SIZE, pageCount, Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import { db, schema } from "@/db";
 
@@ -19,12 +20,20 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   minute: "2-digit",
 });
 
-export default async function SubmissionsPage() {
+export default async function SubmissionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: raw } = await searchParams;
   const submissions = await db
     .select()
     .from(schema.submissions)
     .orderBy(desc(schema.submissions.createdAt));
-  const pending = submissions.filter((item) => item.status === "pending");
+  const totalPages = pageCount(submissions.length, PAGE_SIZE);
+  const page = Math.min(Math.max(Number(raw) || 1, 1), totalPages);
+  const paged = submissions.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pending = paged.filter((item) => item.status === "pending");
 
   return (
     <div className="container py-14 sm:py-20">
@@ -82,7 +91,7 @@ export default async function SubmissionsPage() {
       <section className="mt-14">
         <h2 className="index-num mb-4">已处理</h2>
         <ul className="border-t" style={{ borderColor: "var(--border)" }}>
-          {submissions
+          {paged
             .filter((item) => item.status !== "pending")
             .map((item) => (
               <li key={item.id} className="flex items-center gap-4 border-b py-3" style={{ borderColor: "var(--border)" }}>
@@ -93,6 +102,8 @@ export default async function SubmissionsPage() {
             ))}
         </ul>
       </section>
+
+      <Pagination page={page} totalPages={totalPages} basePath="/admin/submissions" />
     </div>
   );
 }
