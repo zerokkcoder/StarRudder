@@ -14,16 +14,14 @@ type SearchData = {
   articles: { title: string; slug: string; summary: string }[];
 };
 
-const sectionToHref: Record<string, string> = {
-  hero: "/",
-  featured: "/sites",
-  journal: "/news",
-  friends: "/links",
-};
-
 export function SiteChrome({ searchData }: { searchData: SearchData }) {
   const pathname = usePathname();
-  const [active, setActive] = useState(pathname === "/" ? "hero" : pathname);
+  // 站点即首页：/ 与 /sites 都高亮「站点」
+  const active = pathname.startsWith("/news")
+    ? "/news"
+    : pathname.startsWith("/links")
+      ? "/links"
+      : "/";
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -39,27 +37,6 @@ export function SiteChrome({ searchData }: { searchData: SearchData }) {
       window.removeEventListener("resize", onScroll);
     };
   }, []);
-
-  useEffect(() => {
-    if (pathname !== "/") {
-      setActive(pathname);
-      return;
-    }
-    const sections = document.querySelectorAll<HTMLElement>("[data-section]");
-    if (sections.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting);
-        if (visible.length > 0) {
-          const id = visible[0].target.getAttribute("data-section");
-          if (id && sectionToHref[id]) setActive(sectionToHref[id]);
-        }
-      },
-      { rootMargin: "-30% 0px -55% 0px" },
-    );
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [pathname]);
 
   return (
     <>

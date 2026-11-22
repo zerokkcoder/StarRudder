@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "@fontsource-variable/inter";
 import "./globals.css";
 import { AppShell } from "@/components/app-shell";
@@ -40,6 +41,9 @@ export default async function RootLayout({
   return (
     <html lang="zh-CN" className="dark" suppressHydrationWarning data-scroll-behavior="smooth">
       <body className="min-h-screen">
+        <Script id="frontend-theme-init" strategy="beforeInteractive">
+          {`(function(){try{var t=localStorage.getItem('star-rudder-theme');document.documentElement.classList.toggle('dark',t!=='light')}catch(e){document.documentElement.classList.add('dark')}})();`}
+        </Script>
         <DevErrorFilter />
         <JsonLd schema={[websiteJsonLd, organizationJsonLd]} />
         <AppShell

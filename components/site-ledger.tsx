@@ -3,6 +3,14 @@
 import { ArrowUpRight } from "lucide-react";
 import type { MouseEvent } from "react";
 import type { Site } from "@/db/schema";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardPanel,
+  CardTitle,
+} from "@/components/ui/card";
 
 export function hostname(url: string) {
   try {
@@ -28,45 +36,51 @@ export function SiteLedger({ sites }: { sites: Site[] }) {
   }
 
   return (
-    <ul className="border-t" style={{ borderColor: "var(--border)" }}>
+    <ul className="grid gap-3 pt-4 sm:grid-cols-2 xl:grid-cols-3">
       {sites.map((site, index) => (
         <li
           key={site.id}
-          className="group animate-row-in border-b"
-          style={{ borderColor: "var(--border)", animationDelay: `${Math.min(index * 28, 280)}ms` }}
+          className="group animate-row-in"
+          style={{ animationDelay: `${Math.min(index * 24, 260)}ms` }}
         >
           <a
             href={`/go/${site.slug}`}
             target="_blank"
             rel="noopener noreferrer"
             onMouseMove={spotlight}
-            className="spotlight flex items-center gap-3 py-2 transition-colors hover:bg-accent/25 sm:gap-5"
+            className="spotlight block h-full rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
-            <span className="index-num w-6 shrink-0 transition-colors group-hover:text-primary">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span className="flex size-8 shrink-0 items-center justify-center border border-input font-mono text-xs text-primary transition-colors group-hover:border-primary">
-              {site.name.slice(0, 1).toUpperCase()}
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-                <span className="text-[15px] font-medium transition-colors group-hover:text-primary">
-                  {site.name}
-                </span>
-                <span className="index-num">{hostname(site.url)}</span>
-              </span>
-              <span className="mt-0.5 block truncate text-[13px] text-muted-foreground">
-                {site.description}
-              </span>
-            </span>
-            <span className="hidden shrink-0 items-center gap-1.5 md:flex">
-              {site.tags.slice(0, 2).map((tag) => (
-                <span key={tag} className="index-num border px-1.5 py-0.5" style={{ borderColor: "var(--border)" }}>
-                  {tag}
-                </span>
-              ))}
-            </span>
-            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
+            <Card className="h-full transition-all duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/40">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <span className="index-num group-hover:text-primary">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <ArrowUpRight className="size-3.5 text-muted-foreground opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-primary" />
+                </div>
+                <div className="mt-2 flex items-center gap-3">
+                  <span className="flex size-9 shrink-0 items-center justify-center border border-input font-mono text-xs text-primary transition-colors group-hover:border-primary">
+                    {site.name.slice(0, 1).toUpperCase()}
+                  </span>
+                  <span className="min-w-0">
+                    <CardTitle className="truncate text-sm">{site.name}</CardTitle>
+                    <span className="index-num block truncate">{hostname(site.url)}</span>
+                  </span>
+                </div>
+                <CardDescription className="mt-3 line-clamp-2 text-xs leading-5">
+                  {site.description}
+                </CardDescription>
+              </CardHeader>
+              {site.tags.length > 0 && (
+                <CardPanel className="flex flex-wrap gap-1.5 pt-0">
+                  {site.tags.slice(0, 3).map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-[10px] font-normal">
+                      {tag}
+                    </Badge>
+                  ))}
+                </CardPanel>
+              )}
+            </Card>
           </a>
         </li>
       ))}

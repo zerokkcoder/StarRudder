@@ -209,5 +209,8 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - 链接导入增强：GitHub 改用 API `/readme`（raw）+ `/topics`，补全语言/星标/许可/主页/主题与完整 README；X 推文改用 fxtwitter 镜像接口，长文直接取 `article.content.blocks`，实测可抓回 6000+ 字正文
 - 链接导入表单去掉「标签」，改为「作者」（文章表新增 `author` 字段，详情页展示）；深色下原生下拉框设置 `color-scheme: dark`，不再白色突兀
 - 前台首页精简为只展示站点索引列表（移除内容列表与友情链接区块）
+- 前端左侧导航去掉「首页」，站点即首页：`站点 / 内容 / 友链`；`/` 与 `/sites` 均高亮「站点」
+- 站点列表改为卡片网格（coss Card，2–3 列），保留编号、指针聚光与悬停位移
+- 主题闪烁修复：`beforeInteractive` 脚本在首屏绘制前读取 `star-rudder-theme` 并设置/移除 `dark` 类，避免「先深后浅」
 
 > 剩余事项需在用户的线上服务器执行：MySQL 建库、迁移、上传产物、Nginx/HTTPS、PM2 启动、Google 验证。

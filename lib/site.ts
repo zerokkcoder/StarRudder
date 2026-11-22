@@ -18,8 +18,7 @@ export const siteConfig = {
     "开发资源",
   ],
   nav: [
-    { label: "首页", href: "/" },
-    { label: "站点", href: "/sites" },
+    { label: "站点", href: "/" },
     { label: "内容", href: "/news" },
     { label: "友链", href: "/links" },
   ],

@@ -43,8 +43,8 @@ export default async function HomePage() {
         <div className="ml-auto flex items-center gap-4 index-num">
           <span>已收录 {String(sites.length).padStart(2, "0")}</span>
           <span>方位 {String(categories.length).padStart(2, "0")}</span>
-          <Link href="/submit" className="flex items-center gap-1 transition-colors hover:text-primary">
-            提交站点 <ArrowRight className="size-3" />
+          <Link href="/sites" className="flex items-center gap-1 transition-colors hover:text-primary">
+            完整目录 <ArrowRight className="size-3" />
           </Link>
         </div>
       </header>
