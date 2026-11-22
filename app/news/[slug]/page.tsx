@@ -65,9 +65,9 @@ export default async function ArticlePage({
 
       <header className="mt-12 border-b pb-10" style={{ borderColor: "var(--border)" }}>
         <div className="flex items-center gap-3">
-          <span className="index-num text-primary">03 / JOURNAL ENTRY</span>
+          <span className="index-num text-primary">资讯正文</span>
           {article.source === "rss" && (
-            <span className="index-num border px-1.5 py-0.5" style={{ borderColor: "var(--border)" }}>RSS 聚合</span>
+            <span className="index-num border px-1.5 py-0.5" style={{ borderColor: "var(--border)" }}>聚合</span>
           )}
         </div>
         <h1 className="mt-6 text-balance text-3xl font-semibold leading-tight tracking-[-0.03em] sm:text-4xl">

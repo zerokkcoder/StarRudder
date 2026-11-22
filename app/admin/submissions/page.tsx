@@ -30,7 +30,7 @@ export default async function SubmissionsPage() {
     <div className="container py-14 sm:py-20">
       <header className="flex flex-wrap items-end justify-between gap-6 border-b pb-5" style={{ borderColor: "var(--border)" }}>
         <div>
-          <p className="index-num text-primary">ADMIN / SUBMISSIONS</p>
+          <p className="index-num text-primary">后台 / 提交审核</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">提交审核</h1>
           <p className="mt-2 text-xs text-muted-foreground">待处理 {pending.length} 条 · 总计 {submissions.length} 条</p>
         </div>
@@ -40,7 +40,7 @@ export default async function SubmissionsPage() {
       </header>
 
       <section className="mt-10">
-        <h2 className="index-num mb-4">PENDING / 待处理</h2>
+        <h2 className="index-num mb-4">待处理</h2>
         {pending.length === 0 ? (
           <p className="border py-12 text-center text-sm text-muted-foreground" style={{ borderColor: "var(--border)" }}>
             没有待处理的提交。
@@ -80,7 +80,7 @@ export default async function SubmissionsPage() {
       </section>
 
       <section className="mt-14">
-        <h2 className="index-num mb-4">HISTORY / 已处理</h2>
+        <h2 className="index-num mb-4">已处理</h2>
         <ul className="border-t" style={{ borderColor: "var(--border)" }}>
           {submissions
             .filter((item) => item.status !== "pending")

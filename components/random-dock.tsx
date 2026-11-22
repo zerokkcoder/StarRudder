@@ -69,7 +69,7 @@ export function RandomDock({ sites }: { sites: Pick[] }) {
       {pick && (
         <div className="route-sweep fixed inset-0 z-[60] flex flex-col items-center justify-center bg-background">
           <CompassMark className="size-24 text-primary" spin />
-          <p className="index-num mt-8 text-primary">LOCKING BEARING / 航线锁定</p>
+          <p className="index-num mt-8 text-primary">正在定位航线</p>
           <p className="mt-4 text-center text-2xl font-semibold tracking-tight sm:text-3xl">
             正在前往 {pick.name}
           </p>

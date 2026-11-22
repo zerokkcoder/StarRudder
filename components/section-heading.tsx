@@ -14,13 +14,13 @@ export function SectionHeading({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-6 border-b pb-3" style={{ borderColor: "var(--border)" }}>
+    <div className="mb-4 flex flex-wrap items-end justify-between gap-4 border-b pb-2" style={{ borderColor: "var(--border)" }}>
       <div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <span className="index-num text-primary">{number}</span>
-          <span className="index-num uppercase tracking-[0.2em]">{label}</span>
+          <span className="index-num">{label}</span>
         </div>
-        <h2 id={id} className="mt-3 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
+        <h2 id={id} className="mt-1 text-lg font-semibold tracking-tight">
           {title}
         </h2>
       </div>

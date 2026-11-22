@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/inter";
 import "./globals.css";
 import { DevErrorFilter } from "@/components/dev-error-filter";
-import { NewsTicker } from "@/components/news-ticker";
 import { RandomDock } from "@/components/random-dock";
 import { SiteChrome } from "@/components/site-chrome";
 import { SiteFooter } from "@/components/site-footer";
@@ -15,7 +14,7 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   ...createMetadata({ title: siteConfig.name, description: siteConfig.description }),
   title: {
-    default: `${siteConfig.name} ${siteConfig.nameEn} · ${siteConfig.slogan}`,
+    default: `${siteConfig.name} · ${siteConfig.slogan}`,
     template: `%s | ${siteConfig.name}`,
   },
 };
@@ -57,8 +56,7 @@ export default async function RootLayout({
             })),
           }}
         />
-        <div className="lg:pl-[232px]">
-          <NewsTicker articles={allArticles.slice(0, 5).map(({ title, slug }) => ({ title, slug }))} />
+        <div className="lg:pl-[176px]">
           <main className="min-h-[70vh]">{children}</main>
           <SiteFooter />
         </div>

@@ -12,11 +12,11 @@ export function LoginForm() {
   return (
     <form action={action} className="mt-8 space-y-5">
       <div>
-        <label htmlFor="email" className="index-num mb-2 block">EMAIL</label>
+        <label htmlFor="email" className="index-num mb-2 block">邮箱</label>
         <Input id="email" name="email" type="email" required className="rounded-none" placeholder="admin@starrudder.dev" />
       </div>
       <div>
-        <label htmlFor="password" className="index-num mb-2 block">PASSWORD</label>
+        <label htmlFor="password" className="index-num mb-2 block">密码</label>
         <Input id="password" name="password" type="password" required className="rounded-none" />
       </div>
       {state.error && <p className="text-sm text-destructive">{state.error}</p>}

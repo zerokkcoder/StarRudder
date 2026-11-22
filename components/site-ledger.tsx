@@ -40,12 +40,12 @@ export function SiteLedger({ sites }: { sites: Site[] }) {
             target="_blank"
             rel="noopener noreferrer"
             onMouseMove={spotlight}
-            className="spotlight flex items-center gap-4 py-3 transition-colors hover:bg-accent/25 sm:gap-6"
+            className="spotlight flex items-center gap-3 py-2 transition-colors hover:bg-accent/25 sm:gap-5"
           >
             <span className="index-num w-6 shrink-0 transition-colors group-hover:text-primary">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span className="flex size-9 shrink-0 items-center justify-center border border-input font-mono text-sm text-primary transition-colors group-hover:border-primary">
+            <span className="flex size-8 shrink-0 items-center justify-center border border-input font-mono text-xs text-primary transition-colors group-hover:border-primary">
               {site.name.slice(0, 1).toUpperCase()}
             </span>
             <span className="min-w-0 flex-1">

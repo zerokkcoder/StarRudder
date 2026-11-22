@@ -70,10 +70,10 @@ export function TiptapEditor({
         </Tool>
         <span className="mx-1 h-4 w-px" style={{ background: "var(--border)" }} />
         <Tool label="二级标题" active={editor.isActive("heading", { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
-          H2
+          标题二
         </Tool>
         <Tool label="三级标题" active={editor.isActive("heading", { level: 3 })} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
-          H3
+          标题三
         </Tool>
         <span className="mx-1 h-4 w-px" style={{ background: "var(--border)" }} />
         <Tool label="无序列表" active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()}>

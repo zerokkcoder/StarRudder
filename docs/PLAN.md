@@ -154,7 +154,24 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - [x] 友链/站点提交审核：JWT 会话鉴权（jose + httpOnly cookie）、`/login`、`/admin/submissions` 收录/忽略（友链写入 friend_links，站点写入 sites）、退出登录；端到端实测通过
 - [x] 新增秘钥：`CRON_SECRET`、`AUTH_SECRET`（见 `.env.example`）
 
+### 设计 v1.2「极紧凑中文索引」（已完成）
+
+- 主内容 980px、侧栏 176px；首页第一屏即「最新资讯」列表（8 条），其后为精选站点与友链
+- 全站 UI 中文化：导航、章节、按钮、表单、后台、错误页均使用中文；移除装饰性英文小标与中英混排
+- RSS 源改为中文来源（少数派、InfoQ 中文），抓取 22 条中文资讯
+- 候选域名清单见 [docs/DOMAINS.md](DOMAINS.md)
+
+### M4 后台管理（已完成）
+
+- [x] 仪表盘 `/admin`：站点/资讯/分类/友链/订阅源/待审核数量总览 + 管理入口 + 最近待审
+- [x] 站点 CRUD：`/admin/sites`、`/admin/sites/[id]`（新增/编辑/删除/精选/状态）
+- [x] 分类 CRUD：`/admin/categories`（新增/删除）
+- [x] 资讯管理：`/admin/articles`（列表/删除）、`/admin/articles/new`（Tiptap 发布）
+- [x] 订阅源管理：`/admin/rss-sources`（新增/删除/立即抓取）
+- [x] 友链管理：`/admin/friend-links`（新增/删除）
+- [x] 提交审核：`/admin/submissions`（收录/忽略）
+- [x] JWT 会话鉴权、统一后台导航与退出登录；后台页面均 noindex
+
 ### 待办
 
-- M4 后台完善：站点/分类/资讯/RSS 源 CRUD + 仪表盘（当前已有提交审核与新建资讯）
-- M5 SEO 深化 + 上线部署
+- M5 SEO 深化 + 上线部署（含域名确定后更新 `NEXT_PUBLIC_SITE_URL`）

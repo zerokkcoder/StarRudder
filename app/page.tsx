@@ -2,38 +2,34 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CompassMark } from "@/components/compass-mark";
-import { HeroCompass } from "@/components/hero-compass";
-import { SectionHeading } from "@/components/section-heading";
 import { SiteLedger } from "@/components/site-ledger";
-import { StatCounter } from "@/components/stat-counter";
-import { getFeaturedSites, getFriendLinks, getLatestArticles, getSiteCategories } from "@/lib/queries";
+import { getAllSites, getFriendLinks, getLatestArticles } from "@/lib/queries";
 import { createMetadata, JsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createMetadata({
-  title: `${siteConfig.name} ${siteConfig.nameEn} · 发现值得停泊的好站`,
+  title: `${siteConfig.name} · 发现值得停泊的好站`,
   path: "/",
 });
 
-const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
-  year: "numeric",
+const shortDate = new Intl.DateTimeFormat("zh-CN", {
   month: "2-digit",
   day: "2-digit",
 });
 
 export default async function HomePage() {
-  const [featuredSites, latestArticles, links, categories] = await Promise.all([
-    getFeaturedSites(),
-    getLatestArticles(),
+  const [allSites, articles, links] = await Promise.all([
+    getAllSites(),
+    getLatestArticles(8),
     getFriendLinks(),
-    getSiteCategories(),
   ]);
+  const featured = allSites.filter((site) => site.featured).slice(0, 6);
 
   const itemListJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "星舵精选站点",
-    itemListElement: featuredSites.map((site, index) => ({
+    itemListElement: featured.map((site, index) => ({
       "@type": "ListItem",
       position: index + 1,
       name: site.name,
@@ -42,90 +38,47 @@ export default async function HomePage() {
   };
 
   return (
-    <>
+    <div className="container py-7 sm:py-9">
       <JsonLd schema={itemListJsonLd} />
 
-      {/* 01 / PREFACE */}
-      <section data-section="hero" className="chart-grid relative overflow-hidden border-b" style={{ borderColor: "var(--border)" }}>
-        <div className="container grid items-center gap-10 py-20 sm:py-24 lg:grid-cols-[1fr_auto] lg:py-28">
-          <div>
-            <div className="rise flex items-center gap-3">
-              <CompassMark className="size-5 text-primary" />
-              <span className="index-num uppercase tracking-[0.2em] text-primary">
-                01 / Preface — Index of the useful web
-              </span>
-            </div>
-            <h1 className="mt-6 text-balance text-[2.5rem] leading-[1.08] font-semibold tracking-[-0.035em] sm:text-5xl lg:text-[3.9rem]">
-              <span className="rise rise-delay-1 block">在信息的海洋里，</span>
-              <span className="rise rise-delay-2 block">找到值得停泊的</span>
-              <span className="rise rise-delay-3 block text-primary">好站。</span>
-            </h1>
-            <p className="rise rise-delay-3 mt-6 max-w-lg text-sm leading-6 text-muted-foreground">
-              {siteConfig.slogan}。这是一份持续修订的索引，只收录真正值得再次打开的工具与内容。
-            </p>
-
-            <div className="rise rise-delay-3 mt-10 flex flex-wrap items-center gap-x-9 gap-y-4 border-t pt-5" style={{ borderColor: "var(--border)" }}>
-              <StatCounter value={featuredSites.length} label="INDEXED" />
-              <StatCounter value={categories.length} label="BEARINGS" />
-              <StatCounter value={latestArticles.length} label="JOURNAL" />
-              <Link href="/sites" className="group ml-auto flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-primary">
-                进入索引
-                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-          </div>
-
-          <HeroCompass />
+      {/* 紧凑抬头 */}
+      <header className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b pb-4" style={{ borderColor: "var(--border)" }}>
+        <Link href="/" className="flex items-center gap-2">
+          <CompassMark className="size-5 text-primary" />
+          <span className="text-base font-semibold tracking-tight">星舵</span>
+        </Link>
+        <p className="text-xs text-muted-foreground">发现值得停泊的好站</p>
+        <div className="ml-auto flex items-center gap-4 index-num">
+          <span>已收录 {String(allSites.length).padStart(2, "0")}</span>
+          <span>资讯 {String(articles.length).padStart(2, "0")}</span>
+          <Link href="/sites" className="flex items-center gap-1 transition-colors hover:text-primary">
+            全部站点 <ArrowRight className="size-3" />
+          </Link>
         </div>
-      </section>
+      </header>
 
-      {/* 02 / SELECTED HARBORS */}
-      <section data-section="featured" className="container py-16 sm:py-20">
-        <SectionHeading
-          number="02"
-          label="Selected Harbors"
-          title="精选索引"
-          id="featured-heading"
-          action={
-            <Link href="/sites" className="group flex items-center gap-2 index-num transition-colors hover:text-primary">
-              ALL ENTRIES
-              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
-            </Link>
-          }
-        />
-        <SiteLedger sites={featuredSites} />
-      </section>
-
-      {/* 03 / JOURNAL */}
-      <section data-section="journal" className="container pb-16 sm:pb-20">
-        <SectionHeading
-          number="03"
-          label="The Journal"
-          title="航海日志"
-          id="news-heading"
-          action={
-            <Link href="/news" className="group flex items-center gap-2 index-num transition-colors hover:text-primary">
-              ALL ENTRIES
-              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
-            </Link>
-          }
-        />
-        <ul className="border-t" style={{ borderColor: "var(--border)" }}>
-          {latestArticles.map((article, index) => (
-            <li key={article.id} className="group border-b" style={{ borderColor: "var(--border)" }}>
-              <Link href={`/news/${article.slug}`} className="flex items-start gap-5 py-5 transition-colors hover:bg-accent/40 sm:gap-8">
-                <span className="index-num w-6 shrink-0 group-hover:text-primary">
+      {/* 首屏即见：最新资讯 */}
+      <section className="pt-5" aria-labelledby="latest-news">
+        <div className="flex items-baseline justify-between border-b pb-2" style={{ borderColor: "var(--border)" }}>
+          <h1 id="latest-news" className="text-lg font-semibold tracking-tight">最新资讯</h1>
+          <Link href="/news" className="index-num flex items-center gap-1 transition-colors hover:text-primary">
+            查看全部 <ArrowRight className="size-3" />
+          </Link>
+        </div>
+        <ul className="border-b" style={{ borderColor: "var(--border)" }}>
+          {articles.map((article, index) => (
+            <li key={article.id} className="group border-b last:border-b-0" style={{ borderColor: "var(--border)" }}>
+              <Link href={`/news/${article.slug}`} className="flex items-center gap-3 py-2.5 transition-colors hover:bg-accent/40">
+                <span className="index-num w-5 shrink-0 group-hover:text-primary">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <time dateTime={article.publishedAt.toISOString()} className="index-num hidden w-24 shrink-0 sm:block">
-                  {dateFormatter.format(article.publishedAt)}
+                <time dateTime={article.publishedAt.toISOString()} className="index-num w-12 shrink-0">
+                  {shortDate.format(article.publishedAt)}
                 </time>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-medium transition-colors group-hover:text-primary">
-                    {article.title}
-                  </span>
-                  <span className="mt-1 block truncate text-xs text-muted-foreground">{article.summary}</span>
+                <span className="min-w-0 flex-1 truncate text-[13px] transition-colors group-hover:text-primary">
+                  {article.title}
                 </span>
+                {article.source === "rss" && <span className="index-num shrink-0">聚合</span>}
                 <ArrowRight className="size-3.5 shrink-0 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
               </Link>
             </li>
@@ -133,28 +86,39 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      {/* 04 / FRIENDS */}
-      <section data-section="friends" className="container pb-20 sm:pb-24">
-        <SectionHeading number="04" label="Friendly Beacons" title="友链灯塔" id="links-heading" />
-        <div className="grid gap-x-12 gap-y-6 sm:grid-cols-2">
+      {/* 精选站点 */}
+      <section className="pt-8" aria-labelledby="featured-sites">
+        <div className="flex items-baseline justify-between border-b pb-2" style={{ borderColor: "var(--border)" }}>
+          <h2 id="featured-sites" className="text-lg font-semibold tracking-tight">精选站点</h2>
+          <Link href="/sites" className="index-num flex items-center gap-1 transition-colors hover:text-primary">
+            查看全部 <ArrowRight className="size-3" />
+          </Link>
+        </div>
+        <SiteLedger sites={featured} />
+      </section>
+
+      {/* 友情链接 */}
+      <section className="pt-8 pb-12" aria-labelledby="friend-links">
+        <div className="border-b pb-2" style={{ borderColor: "var(--border)" }}>
+          <h2 id="friend-links" className="text-lg font-semibold tracking-tight">友情链接</h2>
+        </div>
+        <div className="grid gap-x-8 sm:grid-cols-2">
           {links.map((link) => (
             <a
               key={link.id}
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-start gap-4 border-b pb-4 transition-colors hover:border-primary"
+              className="group flex items-center gap-3 border-b py-2.5 text-[13px] transition-colors hover:text-primary"
               style={{ borderColor: "var(--border)" }}
             >
               <span className="index-num group-hover:text-primary">↗</span>
-              <span>
-                <span className="block text-sm font-medium group-hover:text-primary">{link.name}</span>
-                <span className="mt-1 block text-xs text-muted-foreground">{link.description}</span>
-              </span>
+              <span className="font-medium">{link.name}</span>
+              <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">{link.description}</span>
             </a>
           ))}
         </div>
       </section>
-    </>
+    </div>
   );
 }

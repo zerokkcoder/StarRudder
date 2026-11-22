@@ -64,28 +64,25 @@ export function SiteChrome({ searchData }: { searchData: SearchData }) {
   return (
     <>
       {/* 桌面：左侧固定导航轨道 */}
-      <div className="fixed left-0 top-0 z-50 hidden h-[2px] w-[232px] lg:block" style={{ background: "var(--muted)" }}>
+      <div className="fixed left-0 top-0 z-50 hidden h-[2px] w-[176px] lg:block" style={{ background: "var(--muted)" }}>
         <div className="h-full bg-primary transition-[width] duration-150" style={{ width: `${progress}%` }} />
       </div>
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[232px] flex-col border-r px-5 py-6 lg:flex" style={{ borderColor: "var(--border)" }}>
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[176px] flex-col border-r px-4 py-5 lg:flex" style={{ borderColor: "var(--border)" }}>
         <Link href="/" className="flex items-center gap-2.5" aria-label="星舵首页">
           <span className="text-primary">
             <CompassMark className="size-8" />
           </span>
-          <span>
-            <span className="block text-sm font-semibold tracking-tight">星舵</span>
-            <span className="index-num block">STAR RUDDER</span>
-          </span>
+          <span className="text-sm font-semibold tracking-tight">星舵</span>
         </Link>
 
-        <nav className="mt-12 flex flex-col gap-0.5" aria-label="主导航">
+        <nav className="mt-8 flex flex-col gap-0.5" aria-label="主导航">
           {siteConfig.nav.map((item, index) => {
             const isActive = active === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`group flex items-baseline gap-3 border-l-2 py-2 pl-3 text-sm transition-colors ${
+                className={`group flex items-baseline gap-2.5 border-l-2 py-1.5 pl-2.5 text-[13px] transition-colors ${
                   isActive ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -105,13 +102,13 @@ export function SiteChrome({ searchData }: { searchData: SearchData }) {
             trigger={
               <>
                 <Search className="size-3.5" />
-                <span className="flex-1">索引检索</span>
+                <span className="flex-1">站内检索</span>
                 <span className="index-num">⌘K</span>
               </>
             }
           />
           <div className="flex items-center justify-between border-t pt-3" style={{ borderColor: "var(--border)" }}>
-            <span className="index-num">© 2026 STAR RUDDER</span>
+            <span className="index-num">© 2026 星舵</span>
             <ThemeToggle />
           </div>
         </div>
@@ -119,7 +116,7 @@ export function SiteChrome({ searchData }: { searchData: SearchData }) {
 
       {/* 移动端：顶部细条 */}
       <div className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur lg:hidden" style={{ borderColor: "var(--border)" }}>
-        <div className="flex h-14 items-center gap-3 px-5">
+        <div className="flex h-12 items-center gap-3 px-4">
           <Link href="/" className="flex items-center gap-2 text-primary" aria-label="星舵首页">
             <CompassMark className="size-6" />
             <span className="text-sm font-semibold text-foreground">星舵</span>

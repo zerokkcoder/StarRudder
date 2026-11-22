@@ -125,7 +125,7 @@ export function SearchDialog({
             <DialogDescription>搜索站点与资讯</DialogDescription>
           </DialogHeader>
           <div className="flex items-center gap-3 border-b px-4 py-3">
-            <span className="index-num">SEARCH / 索引检索</span>
+            <span className="index-num">站内检索</span>
             <span className="ml-auto index-num">⌘K</span>
           </div>
           <div className="p-2">

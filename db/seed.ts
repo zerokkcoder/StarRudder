@@ -241,14 +241,14 @@ async function main() {
 
   await db.insert(rssSources).values([
     {
-      name: "Smashing Magazine",
-      url: "https://www.smashingmagazine.com/feed/",
+      name: "少数派",
+      url: "https://sspai.com/feed",
       categoryId: newsCategory[0].id,
       status: "active",
     },
     {
-      name: "CSS-Tricks",
-      url: "https://css-tricks.com/feed/",
+      name: "InfoQ 中文",
+      url: "https://www.infoq.cn/feed",
       categoryId: newsCategory[0].id,
       status: "active",
     },
