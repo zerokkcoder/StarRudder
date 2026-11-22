@@ -45,16 +45,28 @@ export default async function ArticlePage({
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: article.title,
-    description: article.summary,
-    datePublished: article.publishedAt.toISOString(),
-    inLanguage: "zh-CN",
-    publisher: { "@type": "Organization", name: siteConfig.name },
-    mainEntityOfPage: `${siteConfig.url}/news/${article.slug}`,
-  };
+  const pageUrl = `${siteConfig.url}/news/${article.slug}`;
+  const articleJsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: article.title,
+      description: article.summary,
+      datePublished: article.publishedAt.toISOString(),
+      inLanguage: "zh-CN",
+      publisher: { "@type": "Organization", name: siteConfig.name },
+      mainEntityOfPage: pageUrl,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: siteConfig.name, item: siteConfig.url },
+        { "@type": "ListItem", position: 2, name: "最新资讯", item: `${siteConfig.url}/news` },
+        { "@type": "ListItem", position: 3, name: article.title, item: pageUrl },
+      ],
+    },
+  ];
 
   return (
     <article className="container max-w-3xl py-14 sm:py-20">

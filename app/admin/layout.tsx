@@ -7,12 +7,13 @@ import { CompassMark } from "@/components/compass-mark";
 
 const menu = [
   { href: "/admin", label: "后台首页" },
-  { href: "/admin/sites", label: "站点" },
-  { href: "/admin/categories", label: "分类" },
-  { href: "/admin/articles", label: "资讯" },
+  { href: "/admin/seo", label: "搜索引擎" },
+  { href: "/admin/sites", label: "站点管理" },
+  { href: "/admin/categories", label: "分类管理" },
+  { href: "/admin/articles", label: "资讯管理" },
   { href: "/admin/rss-sources", label: "订阅源" },
-  { href: "/admin/friend-links", label: "友链" },
-  { href: "/admin/submissions", label: "审核" },
+  { href: "/admin/friend-links", label: "友情链接" },
+  { href: "/admin/submissions", label: "提交审核" },
 ];
 
 export default async function AdminLayout({
@@ -21,7 +22,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await getSession();
-  if (!session) redirect("/login");
+  if (!session) redirect("/admin/login");
 
   return (
     <div className="min-h-screen">

@@ -12,7 +12,6 @@ import {
   DialogPopup,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 
 type SearchItem = {
@@ -129,7 +128,7 @@ export function SearchDialog({
             <span className="ml-auto index-num">⌘K</span>
           </div>
           <div className="p-2">
-            <Input
+            <input
               autoFocus
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -149,7 +148,7 @@ export function SearchDialog({
                 }
               }}
               placeholder="搜索站点、工具、资讯…"
-              className="border-transparent rounded-none shadow-none px-2"
+              className="h-9 w-full bg-transparent px-3 text-sm text-foreground outline-none placeholder:text-muted-foreground"
             />
           </div>
           <div className="max-h-96 overflow-y-auto border-t px-2 py-2">

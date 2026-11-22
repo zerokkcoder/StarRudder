@@ -36,7 +36,7 @@ export function FormDialog({
             填写后提交，保存即生效。
           </DialogDescription>
         </DialogHeader>
-        <div className="max-h-[70vh] overflow-y-auto px-1 pb-1">{children}</div>
+        <div className="max-h-[70vh] overflow-y-auto px-5 pt-4 pb-5">{children}</div>
       </DialogPopup>
     </Dialog>
   );

@@ -8,6 +8,7 @@
 - 设计规范：[docs/DESIGN.md](docs/DESIGN.md)
 - 域名说明：[docs/DOMAINS.md](docs/DOMAINS.md)
 - 部署指南：[docs/DEPLOY.md](docs/DEPLOY.md)
+- SEO 与趋势跟踪：[docs/SEO.md](docs/SEO.md)
 
 ## 技术栈
 

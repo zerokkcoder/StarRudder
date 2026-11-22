@@ -151,7 +151,7 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 
 - [x] RSS 聚合：`lib/rss.ts` + `POST /api/rss/fetch`（Bearer CRON_SECRET）+ `pnpm rss:fetch`；按 sourceUrl 去重、仅沉淀摘要与原文链接；实测 2 源新增 24 条，二次抓取新增 0 条
 - [x] Tiptap 编辑器：`components/tiptap-editor.tsx`，已在后台「新建资讯」页接入，支持标题、加粗、列表、引用、代码块
-- [x] 友链/站点提交审核：JWT 会话鉴权（jose + httpOnly cookie）、`/login`、`/admin/submissions` 收录/忽略（友链写入 friend_links，站点写入 sites）、退出登录；端到端实测通过
+- [x] 友链/站点提交审核：JWT 会话鉴权（jose + httpOnly cookie）、`/admin/login`、`/admin/submissions` 收录/忽略（友链写入 friend_links，站点写入 sites）、退出登录；端到端实测通过
 - [x] 新增秘钥：`CRON_SECRET`、`AUTH_SECRET`（见 `.env.example`）
 
 ### 设计 v1.2「极紧凑中文索引」（已完成）
@@ -190,5 +190,13 @@ submissions    用户提交（id, type[site/link], name, url, description, statu
 - [x] 侧栏 152px；内容区居中、最大宽 1200px（修正宽屏右侧留白过大的问题）
 - [x] 后台新增/编辑表单改为弹窗（站点、分类、订阅源、友链），列表页不再直接展示表单
 - [x] 列表分页：公共资讯、站点目录，后台站点/分类/资讯/订阅源/友链/审核，统一 12 条/页，中文「上一页/下一页/第 X / Y 页」
+
+### 收尾修正（已完成）
+
+- 站内检索输入框改用原生 input，修复 coss Input 包裹层样式导致的显示错乱
+- 登录路由从 `/login` 迁移到 `/admin/login`（用路由组 `(auth)` 避开后台布局守卫）
+- 后台左侧菜单统一为 3–4 字；后台首页移除「管理入口」区块；弹窗表单内容与按钮增加内边距
+- 新增后台 `/admin/seo` 状态页与 `docs/SEO.md`（SEO 验收清单 + Google Trends 每周持续改进流程）
+- 资讯详情页补充 `BreadcrumbList` JSON-LD
 
 > 剩余事项需在用户的线上服务器执行：MySQL 建库、迁移、上传产物、Nginx/HTTPS、PM2 启动、Google 验证。

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 
@@ -9,15 +8,6 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
-
-const manageLinks = [
-  { href: "/admin/sites", label: "站点管理" },
-  { href: "/admin/categories", label: "分类管理" },
-  { href: "/admin/articles", label: "资讯管理" },
-  { href: "/admin/rss-sources", label: "订阅源" },
-  { href: "/admin/friend-links", label: "友情链接" },
-  { href: "/admin/submissions", label: "提交审核" },
-];
 
 export default async function AdminPage() {
   const [siteRows, articleRows, categoryRows, linkRows, sourceRows, submissionRows] = await Promise.all([
@@ -53,17 +43,6 @@ export default async function AdminPage() {
           </div>
         ))}
       </div>
-
-      <section className="pt-7">
-        <h2 className="index-num border-b pb-2">管理入口</h2>
-        <div className="grid gap-x-8 sm:grid-cols-2">
-          {manageLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="flex items-center justify-between border-b py-2.5 text-[13px] transition-colors hover:text-primary" style={{ borderColor: "var(--border)" }}>
-              {link.label} <span className="index-num">→</span>
-            </Link>
-          ))}
-        </div>
-      </section>
 
       {submissionRows.length > 0 && (
         <section className="pt-7">

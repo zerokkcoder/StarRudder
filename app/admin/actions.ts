@@ -91,7 +91,7 @@ export async function createArticle(formData: FormData) {
 export async function logout() {
   const store = await cookies();
   store.delete(SESSION_COOKIE);
-  redirect("/login");
+  redirect("/admin/login");
 }
 
 export async function rejectSubmission(formData: FormData) {

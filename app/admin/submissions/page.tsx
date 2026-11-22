@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { desc } from "drizzle-orm";
-import { approveSubmission, logout, rejectSubmission } from "@/app/admin/actions";
+import { approveSubmission, rejectSubmission } from "@/app/admin/actions";
 import { PAGE_SIZE, pageCount, Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import { db, schema } from "@/db";
@@ -43,9 +43,6 @@ export default async function SubmissionsPage({
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">提交审核</h1>
           <p className="mt-2 text-xs text-muted-foreground">待处理 {pending.length} 条 · 总计 {submissions.length} 条</p>
         </div>
-        <form action={logout}>
-          <Button type="submit" variant="outline" size="sm" className="rounded-none">退出登录</Button>
-        </form>
       </header>
 
       <section className="mt-10">
