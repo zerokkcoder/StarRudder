@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const PAGE_SIZE = 12;
+export const PAGE_SIZE = 16;
 
 export function pageCount(total: number, size = PAGE_SIZE) {
   return Math.max(1, Math.ceil(total / size));
