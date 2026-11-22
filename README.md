@@ -44,4 +44,4 @@ pnpm db:seed
 pnpm dev
 ```
 
-打开 http://localhost:3000 。
+打开 http://localhost:4000 。

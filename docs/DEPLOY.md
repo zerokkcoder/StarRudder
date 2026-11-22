@@ -124,7 +124,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/starrudder.cc/privkey.pem;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:4000;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
