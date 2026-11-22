@@ -123,16 +123,12 @@ async function main() {
 
   await db.insert(rssSources).values([
     { name: "OSCHINA", url: "https://www.oschina.net/news/rss", categoryId: catId("dev-news") },
-    { name: "掘金", url: "https://juejin.cn/rss", categoryId: catId("dev-news") },
-    { name: "Smashing Magazine", url: "https://www.smashingmagazine.com/feed/", categoryId: catId("dev-news") },
-    { name: "A List Apart", url: "https://alistapart.com/main/feed/", categoryId: catId("dev-news") },
     { name: "量子位", url: "https://www.qbitai.com/feed", categoryId: catId("ai-progress") },
     { name: "新智元", url: "https://www.aiera.com.cn/feed", categoryId: catId("ai-progress") },
     { name: "机核", url: "https://www.gcores.com/rss", categoryId: catId("game-dev") },
     { name: "Gamelook", url: "http://www.gamelook.com.cn/feed", categoryId: catId("game-dev") },
     { name: "少数派", url: "https://sspai.com/feed", categoryId: catId("product-design") },
-    { name: "Product Hunt", url: "https://www.producthunt.com/feed", categoryId: catId("product-design") },
-    { name: "UX Collective", url: "https://uxdesign.cc/feed", categoryId: catId("product-design") },
+    { name: "人人都是产品经理", url: "https://www.woshipm.com/feed", categoryId: catId("product-design") },
   ]);
 
   await db.insert(friendLinks).values([
