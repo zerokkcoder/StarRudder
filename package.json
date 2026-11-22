@@ -12,7 +12,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "node --env-file=.env.local --import tsx db/seed.ts",
     "db:studio": "drizzle-kit studio",
-    "rss:fetch": "node --env-file=.env.local --import tsx scripts/fetch-rss.ts"
+    "rss:fetch": "node --env-file=.env.local --import tsx scripts/fetch-rss.ts",
+    "rss:backfill": "node --env-file=.env.local --import tsx scripts/backfill-rss.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

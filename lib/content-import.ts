@@ -36,13 +36,30 @@ function markdownToText(md: string) {
   return paragraphs(blocks);
 }
 
-async function fetchText(url: string, headers: Record<string, string> = {}) {
+/** 把 HTML 正文转成按空行分段的纯文本 */
+export function htmlToParagraphs(html: string) {
+  const $ = load(html);
+  $("script, style, nav, footer, header, aside, noscript, iframe").remove();
+  const scope = $("article").length ? $("article") : $("main").length ? $("main") : $("body");
+  const parts = scope
+    .find("p, h2, h3, li")
+    .map((_, el) => $(el).text())
+    .get();
+  return paragraphs(parts) || paragraphs([$("body").text()]);
+}
+
+/** 抓取网页并提取正文纯文本（用于 RSS 条目补全全文） */
+export async function extractPageText(url: string, timeoutMs = 15000) {
+  return htmlToParagraphs(await fetchText(url, {}, timeoutMs));
+}
+
+async function fetchText(url: string, headers: Record<string, string> = {}, timeoutMs = 15000) {
   const response = await fetch(url, {
     headers: {
       "User-Agent": "StarRudder Content Importer/1.0 (+https://starrudder.cc)",
       ...headers,
     },
-    signal: AbortSignal.timeout(15000),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   if (!response.ok) throw new Error(`抓取失败：HTTP ${response.status}`);
   return response.text();

@@ -119,8 +119,13 @@ async function main() {
   );
 
   await db.insert(rssSources).values([
-    { name: "少数派", url: "https://sspai.com/feed", categoryId: catId("tech-news") },
+    { name: "Solidot", url: "https://www.solidot.org/index.rss", categoryId: catId("tech-news") },
+    { name: "cnBeta", url: "https://rss.cnbeta.com.tw/rss", categoryId: catId("tech-news") },
+    { name: "IT之家", url: "https://www.ithome.com/rss/", categoryId: catId("tech-news") },
+    { name: "爱范儿", url: "https://www.ifanr.com/feed", categoryId: catId("tech-news") },
     { name: "InfoQ 中文", url: "https://www.infoq.cn/feed", categoryId: catId("tech-news") },
+    { name: "量子位", url: "https://www.qbitai.com/feed", categoryId: catId("tech-news") },
+    { name: "OSCHINA", url: "https://www.oschina.net/news/rss", categoryId: catId("tech-news") },
   ]);
 
   await db.insert(friendLinks).values([
